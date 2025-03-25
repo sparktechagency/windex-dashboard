@@ -58,7 +58,7 @@ export default function HeaderContainer({ collapsed, setCollapsed }) {
     return () => {
       socket?.off(`notification::${userId}`, handleNotifications);
     };
-  }, [socket, userId, handleNotifications]);
+  }, [socket, userId]);
 
   useEffect(() => {
     if (currentPath?.includes("notification")) {

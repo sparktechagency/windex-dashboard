@@ -18,7 +18,7 @@ const usersData = Array.from({ length: 5 }).map((_, inx) => ({
   status: "pending",
 }));
 
-export default function wishListTable() {
+export default function WishListTable() {
   //@ts-ignore
   const [open, setOpen] = useState(false);
 
@@ -39,12 +39,12 @@ export default function wishListTable() {
             alt="Wish list"
             width={50}
             height={50}
-            className="aspect-square rounded"
+            className="rounded aspect-square"
           />
           <div className="">
             <p>{value?.slice(0, 30)} ...</p>
             <p className="">
-              <span className="h-10 w-10 border-red-400"></span>
+              <span className="w-10 h-10 border-red-400"></span>
               wishlist
             </p>
           </div>
