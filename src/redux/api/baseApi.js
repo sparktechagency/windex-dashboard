@@ -8,13 +8,13 @@ const prepareAuthHeaders = (headers, state) => {
   const otpToken = getFromSessionStorage("signUpToken");
   const forgotPassToken = getFromSessionStorage("forgotPassToken");
   const changePassToken = getFromSessionStorage("changePassToken");
-  const accessToken = getFromSessionStorage("prime-pilates-access-token");
+  const accessToken = getFromSessionStorage("windex-access-token");
   const token = state?.auth?.token;
 
   if (accessToken) {
-    headers.set("authorization", `Bearer ${accessToken}`);
+    headers.set("authorization", `${accessToken}`);
   } else if (token) {
-    headers.set("authorization", `Bearer ${token}`);
+    headers.set("authorization", `${token}`);
   }
 
   if (otpToken) {
@@ -99,7 +99,7 @@ export const baseApi = createApi({
 //   prepareHeaders: (headers, { getState }) => {
 //     const otpToken = getFromSessionStorage("signUpToken");
 //     const forgotPassToken = getFromSessionStorage("forgotPassToken");
-//     const sellerAccessToken = getFromSessionStorage("prime-pilates-access-token");
+//     const sellerAccessToken = getFromSessionStorage("windex-access-token");
 
 //     const token = getState().auth.token;
 

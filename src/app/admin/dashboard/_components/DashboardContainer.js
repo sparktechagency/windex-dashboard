@@ -1,28 +1,27 @@
 "use client";
 
 import CustomBarChart from "@/components/CustomBarChart";
-import RecentUserTable from "./RecentUserTable";
 import CustomCountUp from "@/components/CustomCountUp/CustomCountUp";
 import CustomAreaChart from "@/components/CustomAreaChart";
 import PageLoader from "@/components/shared/PageLoader/PageLoader";
-import { useGetDashboardDataQuery } from "@/redux/api/income.api";
 import { useState } from "react";
 import dayjs from "dayjs";
+import { useGetMetaDataQuery } from "@/redux/api/dashboardApi";
+import { Users } from "lucide-react";
+import { ClipboardList } from "lucide-react";
+import { DollarSign } from "lucide-react";
+import UsersTable from "../../users/_components/UsersTable";
 
 export default function DashboardContainer() {
-  const [JoinYear, setJoinYear] = useState(dayjs().year());
+  const [userYear, setUserYear] = useState(dayjs().year());
   const [incomeYear, setIncomeYear] = useState(dayjs().year());
 
   const query = {
-    JoinYear,
-    incomeYear,
+    user_year: userYear,
+    earning_year: incomeYear,
   };
 
-  const {
-    data: dashboardDataRes,
-    isLoading,
-    refetch,
-  } = useGetDashboardDataQuery(query);
+  const { data: dashboardDataRes, isLoading } = useGetMetaDataQuery(query);
   const dashboardData = dashboardDataRes?.data || {};
 
   if (isLoading) {
@@ -33,91 +32,37 @@ export default function DashboardContainer() {
     {
       key: "users",
       title: "Total Users",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="50"
-          height="50"
-          fill="none"
-          viewBox="0 0 60 61"
-        >
-          <path
-            stroke="var(--primary-white)"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M42.5 50.5H55v-5a7.5 7.5 0 0 0-13.39-4.643m.89 9.643h-25m25 0v-5c0-1.64-.316-3.207-.89-4.643M17.5 50.5H5v-5a7.5 7.5 0 0 1 13.39-4.643M17.5 50.5v-5c0-1.64.316-3.207.89-4.643m0 0C20.235 36.253 24.738 33 30 33s9.766 3.253 11.61 7.857M37.5 18a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0m15 7.5a5 5 0 1 1-10 0 5 5 0 0 1 10 0m-35 0a5 5 0 1 1-10 0 5 5 0 0 1 10 0"
-          ></path>
-        </svg>
-      ),
-      count: Number(dashboardData?.totalUsers || 0),
+      icon: <Users size={35} />,
+      count: Number(dashboardData?.totalUserCount || 0),
     },
     {
       key: "wishlist",
       title: "Total Wishlist",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlSpace="preserve"
-          id="Layer_1"
-          width="50"
-          height="50"
-          fill="#fff"
-          version="1.1"
-          viewBox="0 0 512.001 512.001"
-        >
-          <g id="SVGRepo_iconCarrier">
-            <path d="M498.757 74.817h-62.081L365.922 4.062c-5.416-5.417-14.197-5.417-19.613 0l-70.754 70.753h-62.082c-7.111 0-12.874 5.764-12.874 12.874v96.609l14.322-8.892c10.252-6.365 22.669-7.179 33.407-2.796l47.98-37.832c7.218-5.692 17.683-4.452 23.372 2.764 5.691 7.217 4.453 17.682-2.764 23.372l-46.771 36.879c3.782 15.127-2.369 31.596-16.326 40.262l-27.472 17.057L200.6 271.1v28.015c0 7.111 5.764 12.874 12.874 12.874h285.283c7.111 0 12.874-5.764 12.874-12.874V87.691c0-7.11-5.764-12.874-12.874-12.874m-183.976 0 41.335-41.335 41.335 41.335z"></path>
-            <path d="M250.033 197.008c-5.371-8.651-16.738-11.309-25.387-5.938l-37.337 23.182-.173-34.473c-.12-23.935-19.692-43.408-43.628-43.408H125.37l-19.723 51.152 36.901 16.939v-24.537a3.859 3.859 0 1 1 7.718 0v.04l.407 68.862c1.149 13.809 16.49 21.334 28.091 14.13l65.333-40.565c8.649-5.368 11.307-16.733 5.936-25.384M44.898 288.234l.009 201.644c0 12.219 9.904 22.123 22.123 22.123s22.123-9.904 22.123-22.123V313.047h8.403c-1.772-.583-52.658-24.813-52.658-24.813M142.548 265.148l-16.221 35.333c-4.764 10.377-16.5 15.956-27.624 12.914v176.482c0 12.219 9.904 22.123 22.123 22.123s22.123-9.904 22.123-22.123c-.02-11.15-.401-212.437-.401-224.729M106.462 166.368l-7.496-13.632 6.65-12.096c.991-1.803-.315-4.016-2.375-4.016H84.97c-2.057 0-3.367 2.211-2.375 4.016l6.665 12.12-7.509 13.657a7.7 7.7 0 0 0-.804 5.203l2.628 13.236c7.868-2.859 13.773-1.141 20.462 1.929l3.21-15.117a7.7 7.7 0 0 0-.785-5.3"></path>
-            <path d="m138.113 218.299-42.707-19.606a9.154 9.154 0 0 0-12.138 4.5L72.22 227.261l22.494 12.497c16.069 8.928 21.858 29.191 12.93 45.26a33.1 33.1 0 0 1-11.133 11.846l4.573 2.099a9.154 9.154 0 0 0 12.138-4.5l29.391-64.027a9.153 9.153 0 0 0-4.5-12.137"></path>
-            <circle cx="93.928" cy="85.985" r="38.208"></circle>
-            <path d="m87.502 252.737-50.195-27.888.276-44.884v-.002a3.657 3.657 0 0 1 7.315.021v32.096l14.677 8.155 10.586-23.059c2.399-5.227 6.595-9.294 11.651-11.606l-18.97-49.198H44.34c-23.937 0-43.507 19.474-43.627 43.387l-.344 55.786a18.43 18.43 0 0 0 9.482 16.229l59.744 33.193c8.899 4.946 20.124 1.74 25.069-7.161 4.944-8.899 1.738-20.124-7.162-25.069"></path>
-          </g>
-        </svg>
-      ),
-      count: Number(dashboardData?.totalInstructor || 0),
+      icon: <ClipboardList size={35} />,
+      count: Number(dashboardData?.totalWishlist || 0),
     },
     {
       key: "earnings",
       title: "Total Earnings",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="50"
-          height="50"
-          fill="none"
-          viewBox="0 0 40 40"
-        >
-          <path
-            fill="var(--primary-white)"
-            d="M20.39.125c-.32.063-.882.188-1.25.281-.578.156-.68.211-.843.453-.133.196-.172.344-.149.516.024.125.5 1.055 1.055 2.063l1.016 1.828-.36.172c-.46.21-.898.664-1.125 1.164-.273.609-.25 1.437.063 2.054l.242.461-.242.14c-.5.29-1.508 1.134-2.094 1.743-2.14 2.25-3.508 5.32-3.633 8.195l-.047 1.024-.507.172c-1.446.468-2.407 1.086-4.274 2.718l-1.328 1.172-.273-.226c-.22-.18-.344-.227-.657-.227h-.39l-2.758 2.758-2.758 2.758v.852l4.867 4.859 4.86 4.867h.851l2.758-2.758 2.758-2.758v-.375c0-.25-.055-.445-.156-.601l-.164-.22 6.086-.023 6.085-.023.657-.328c.625-.313.906-.563 5.75-5.102 5.968-5.586 5.57-5.117 5.57-6.68 0-.874-.016-.976-.21-1.374a3.2 3.2 0 0 0-1.392-1.36c-.382-.187-.586-.234-1.18-.258-.96-.046-1.257.063-2.64.97-.617.406-1.14.734-1.156.734-.024 0-.063-.36-.086-.805-.172-2.742-1.578-5.82-3.68-8.008-.578-.601-2.07-1.812-2.234-1.812-.04 0 .047-.211.18-.477.21-.414.242-.562.25-1.078 0-.453-.047-.688-.18-.984-.227-.5-.664-.954-1.125-1.165l-.36-.18 1.016-1.812c.555-1 1.031-1.93 1.055-2.07.055-.367-.242-.758-.68-.89-1.336-.391-1.664-.43-4.18-.454-1.843-.015-2.562.008-3.007.094m4.883 1.563c.47.062.868.132.883.14.008.016-.36.711-.82 1.54L24.5 4.882h-2.594l-.82-1.469c-.445-.812-.82-1.5-.836-1.531-.031-.086 1.11-.258 2.055-.313a14 14 0 0 1 2.968.117m-.039 5.023c.883.258 1.172.648.899 1.18-.195.375-.406.437-1.031.273-.32-.086-.954-.156-1.594-.18-.89-.03-1.203-.007-1.93.141-.96.188-1.101.164-1.312-.242-.274-.531.039-.922.906-1.156.867-.235.875-.235 2.226-.204 1.008.016 1.368.055 1.836.188m-.578 3.055c3.04.773 5.844 3.976 6.805 7.765.156.625.203 1.055.234 2.078l.04 1.29-1.86 1.218-1.867 1.219-.352-.313a4 4 0 0 0-.781-.515c-.398-.188-.523-.203-1.656-.227l-1.235-.031v-.828l.422-.242c.758-.422 1.133-1.11 1.14-2.04 0-.64-.179-1.148-.577-1.617-.258-.304-1.078-.726-1.407-.726-.39 0-.812-.149-.945-.336-.336-.477-.008-1.148.563-1.148.28 0 .406.054.914.421.125.086.328.141.539.141.265-.008.367-.055.547-.25.468-.523.14-1.242-.774-1.687l-.422-.204v-.609c0-.547-.015-.625-.203-.812-.164-.165-.281-.204-.578-.204s-.414.04-.578.204c-.187.187-.203.265-.203.812v.61l-.422.242c-.758.421-1.133 1.109-1.14 2.046 0 .508.03.665.242 1.07.125.266.351.571.484.688.336.282.977.578 1.266.578.39 0 .804.149.937.336.188.274.148.703-.086.946-.351.343-.922.25-1.36-.227-.609-.672-1.562-.398-1.562.438 0 .273.055.375.399.742.226.226.593.515.82.625l.422.203v.86l-.25-.055c-.14-.032-.64-.313-1.117-.625-1.742-1.165-3.407-1.68-5.414-1.68h-.977l.047-.805c.164-2.875 1.992-6.234 4.36-8.015.757-.579 1.866-1.133 2.648-1.336.82-.211 2.11-.211 2.937 0m13.11 10.109c.609.352.859 1.219.539 1.828-.078.14-2.352 2.328-5.063 4.86-3.789 3.554-5.023 4.664-5.351 4.828l-.43.21-6.602.024-6.601.023-3.086-3.093c-3.04-3.04-3.078-3.086-2.93-3.227.586-.547 2.125-1.86 2.57-2.195a7.74 7.74 0 0 1 4.758-1.578c1.797 0 3.336.515 4.875 1.633.297.218.649.445.774.5.156.062.937.109 2.453.14 2.07.04 2.25.055 2.539.211.547.29.82.734.82 1.352 0 .617-.265 1.062-.82 1.359-.305.156-.414.164-3.414.188l-3.102.023-.195.203c-.29.29-.29.852.008 1.148l.21.211 3.36-.023 3.367-.023.47-.227c.593-.297 1.194-.89 1.483-1.484.188-.383.235-.594.258-1.18l.032-.711 3.867-2.531c2.133-1.399 3.93-2.563 4-2.594.297-.125.89-.062 1.21.125M10.117 29.922l4.063 4.062-1.977 1.97-1.969 1.976-4.078-4.078-4.086-4.086 1.953-1.953c1.07-1.07 1.97-1.954 1.993-1.954s1.867 1.828 4.101 4.063"
-          ></path>
-          <path
-            fill="#FDFDFD"
-            d="M16.375 27.156c-.164.164-.203.282-.203.578 0 .297.039.414.203.578.164.165.281.204.578.204s.414-.04.578-.203c.29-.297.29-.86 0-1.157-.164-.164-.281-.203-.578-.203s-.414.04-.578.203"
-          ></path>
-        </svg>
-      ),
-      count: Number(dashboardData?.totalEarnings || 0),
+      icon: <DollarSign size={35} />,
+      count: Number(dashboardData?.totalRevenue || 0),
     },
   ];
 
   return (
     <div className="space-y-10">
-      {/* User Stats Section */}
       <section className="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-3">
         {userStats?.map((stat) => (
           <div
             key={stat.key}
-            className="px-6 py-6 text-white flex-center-start gap-x-4 rounded-xl bg-primary-black"
+            className="flex-center-start gap-x-4 rounded-xl bg-primary-black px-6 py-6 text-white"
           >
-            <div className="p-4 rounded-full flex-center aspect-square bg-primary-black">
+            <div className="flex-center aspect-square rounded-full bg-primary-black p-4">
               {stat.icon}
             </div>
-
             <div>
               <p className="text-lg font-medium">{stat.title}</p>
-              <h5 className="mt-1 text-4xl font-medium text-">
+              <h5 className="mt-1 text-4xl font-medium">
                 {stat.key !== "earnings" ? (
                   <CustomCountUp end={stat.count} />
                 ) : (
@@ -132,28 +77,21 @@ export default function DashboardContainer() {
         ))}
       </section>
 
-      {/* Charts */}
-      <section className="flex-col gap-10 flex-center-between lg:flex-row">
+      <section className="flex-center-between flex-col gap-10 lg:flex-row">
         <CustomBarChart
-          chartName={"Users"}
-          data={dashboardData?.monthlyUsers}
-          setJoinYear={setJoinYear}
+          chartName="Users"
+          data={dashboardData?.userOverview}
+          setJoinYear={setUserYear}
         />
-
         <CustomAreaChart
-          chartName={"Earnings"}
-          data={dashboardData?.monthlyIncome}
+          chartName="Earnings"
+          data={dashboardData?.earningOverview}
           setIncomeYear={setIncomeYear}
         />
       </section>
 
-      {/* Recent Users Table */}
-      <section>
-        <RecentUserTable
-          data={dashboardData?.userDetails}
-          isLoading={isLoading}
-          refetch={refetch}
-        />
+      <section className="pb-20">
+        <UsersTable showPagination={false} limit={5} />
       </section>
     </div>
   );

@@ -7,10 +7,7 @@ const userApi = baseApi.injectEndpoints({
       query: (arg) => ({
         url: "/users",
         method: "GET",
-        params: {
-          role: "user",
-          ...arg,
-        },
+        params: arg,
 
         providesTags: [tagTypes.users],
       }),
@@ -34,20 +31,11 @@ const userApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.user],
     }),
 
-    blockUser: builder.mutation({
-      query: (id) => ({
-        url: `/users/${id}`,
+    changeUserStatus: builder.mutation({
+      query: (payload) => ({
+        url: `/users/change-status`,
         method: "PATCH",
-        body: { status: "blocked" },
-      }),
-      invalidatesTags: [tagTypes.users],
-    }),
-
-    unblockUser: builder.mutation({
-      query: (id) => ({
-        url: `/users/${id}`,
-        method: "PATCH",
-        body: { status: "active" },
+        body: payload,
       }),
       invalidatesTags: [tagTypes.users],
     }),
@@ -58,6 +46,5 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useGetAllUsersQuery,
-  useBlockUserMutation,
-  useUnblockUserMutation,
+  useChangeUserStatusMutation,
 } = userApi;

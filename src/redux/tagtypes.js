@@ -19,6 +19,7 @@ export const tagTypes = {
   attendance: "Attendance",
   appLaunchRegisteredUsers: "AppLaunchRegisteredUsers",
   dashboardData: "DashboardData",
+  metaData: "MetaData",
 };
 
 export const tagTypesList = [
@@ -43,4 +44,5 @@ export const tagTypesList = [
   tagTypes.attendance,
   tagTypes.appLaunchRegisteredUsers,
   tagTypes.dashboardData,
+  tagTypes.metaData,
 ];

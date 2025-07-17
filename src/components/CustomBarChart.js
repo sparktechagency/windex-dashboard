@@ -14,8 +14,8 @@ import dayjs from "dayjs";
 
 const CustomBarChart = ({ chartName, data, setJoinYear }) => {
   return (
-    <div className="w-full p-6 rounded-xl bg-primary-black mary md:w-1/2">
-      <div className="flex items-center justify-between gap-2 mb-10 lg:flex-wrap xl:flex-nowrap">
+    <div className="mary w-full rounded-xl bg-primary-black p-6 md:w-1/2">
+      <div className="mb-10 flex items-center justify-between gap-2 lg:flex-wrap xl:flex-nowrap">
         <h1 className="text-xl font-medium text-white">{chartName} Overview</h1>
 
         <div className="space-x-3">
@@ -85,7 +85,7 @@ const CustomBarChart = ({ chartName, data, setJoinYear }) => {
             barSize={18}
             radius={12}
             background={false}
-            dataKey="total"
+            dataKey="count"
             fill="var(--primary-white)"
           />
         </BarChart>

@@ -4,7 +4,7 @@ export function middleware(req) {
   const { nextUrl } = req;
 
   // Get the accessToken value
-  const isLoggedIn = req.cookies.get("prime-pilates-access-token")?.value;
+  const isLoggedIn = req.cookies.get("windex-access-token")?.value;
 
   const isAuthRoute =
     nextUrl.pathname === "/login" || nextUrl.pathname === "/sign-up";
