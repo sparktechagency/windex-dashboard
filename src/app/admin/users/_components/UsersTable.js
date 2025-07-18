@@ -155,20 +155,16 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
   ];
 
   return (
-    <div>
-      {displayData.length === 0 && !isFetching ? (
-        <div>No users available</div>
-      ) : (
-        <Table
-          style={{ overflowX: "auto" }}
-          className="users-table"
-          columns={columns}
-          dataSource={displayData}
-          loading={isFetching}
-          pagination={paginationConfig}
-          scroll={{ x: "100%" }}
-        />
-      )}
+    <div className="mb-16">
+      <Table
+        style={{ overflowX: "auto" }}
+        className="users-table"
+        columns={columns}
+        dataSource={displayData}
+        loading={isFetching}
+        pagination={paginationConfig}
+        scroll={{ x: "100%" }}
+      />
       <ProfileModal
         open={showProfileModal}
         setOpen={setShowProfileModal}

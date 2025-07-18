@@ -58,8 +58,8 @@ export default function LoginForm() {
 
       <FormWrapper
         defaultValues={{
-          email: "windx1999admin@gamil.com",
-          password: "admin123",
+          email: "junayednoman05@gmail.com",
+          password: "encrypted",
         }}
         onSubmit={onLoginSubmit}
         resolver={zodResolver(loginSchema)}

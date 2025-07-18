@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import adminImg from "@/assets/images/user-avatar.png";
 import { ImagePlus } from "lucide-react";
 import ChangePassForm from "./ChangePassForm";
 import EditProfileForm from "./EditProfileForm";
@@ -52,15 +51,15 @@ export default function ProfileContainer() {
       ),
     },
   ];
-
+  console.log("myProfile?.photoUrl", myProfile?.photoUrl);
   return (
     <div>
       {/* Profile pic */}
       <section className="flex-center gap-x-3 bg-primary py-8 text-white">
         <div className="relative w-max">
-          {myProfile?.image ? (
+          {myProfile?.photoUrl ? (
             <Image
-              src={myProfile?.image}
+              src={myProfile?.photoUrl}
               alt="Avatar image of admin"
               width={1200}
               height={1200}

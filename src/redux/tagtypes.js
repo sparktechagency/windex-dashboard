@@ -20,6 +20,7 @@ export const tagTypes = {
   appLaunchRegisteredUsers: "AppLaunchRegisteredUsers",
   dashboardData: "DashboardData",
   metaData: "MetaData",
+  wishlist: "Wishlist",
 };
 
 export const tagTypesList = [
@@ -45,4 +46,5 @@ export const tagTypesList = [
   tagTypes.appLaunchRegisteredUsers,
   tagTypes.dashboardData,
   tagTypes.metaData,
+  tagTypes.wishlist,
 ];

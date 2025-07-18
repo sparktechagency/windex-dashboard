@@ -9,8 +9,8 @@ import { useForgotPasswordMutation } from "@/redux/api/authApi";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SuccessModal } from "@/utils/modalHook";
-import { setToSessionStorage } from "@/utils/sessionStorage";
 import CustomFormError from "@/components/CustomFormError/CustomFormError";
+import Cookies from "js-cookie";
 
 export default function ForgotPassForm() {
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
@@ -19,34 +19,40 @@ export default function ForgotPassForm() {
 
   const handleForgotPassword = async (data) => {
     try {
-      const res = await forgotPassword(data).unwrap();
+      const res = await forgotPassword({ email: data.email }).unwrap();
 
       if (res?.success) {
         SuccessModal(
           "OTP sent to email",
-          "Please check your email for otp verification",
+          "Please check your email for OTP verification",
         );
 
-        // Set forgotPassToken in session-storage
-        setToSessionStorage("forgotPassToken", res.data.token);
+        // Store token in cookie
+        Cookies.set("forgotPassToken", res.data.token, {
+          expires: 1 / 24, // Expires in 1 hour
+          secure: true, // Use secure cookies in production
+          sameSite: "Strict",
+        });
 
-        // Sent to update password page
+        // Redirect to OTP verification page
         router.push("/otp-verification");
       }
     } catch (error) {
-      setFormError(error?.message || error?.data?.message || error?.error);
+      setFormError(error?.data?.message || "Failed to send OTP");
     }
   };
+
   return (
     <div className="w-full px-6 py-8">
       <section className="mb-8 space-y-2">
         <h4 className="text-3xl font-semibold">Forgot Password</h4>
         <p className="text-dark-gray">
-          Enter your email and we&apos;ll send you an otp for verification
+          Enter your email and we&apos;ll send you an OTP for verification
         </p>
       </section>
 
       <FormWrapper
+        defaultValues={{ email: "junayednoman05@gmail.com" }}
         onSubmit={handleForgotPassword}
         resolver={zodResolver(forgotPassSchema)}
       >
