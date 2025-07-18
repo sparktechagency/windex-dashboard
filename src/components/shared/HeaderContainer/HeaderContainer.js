@@ -40,13 +40,13 @@ export default function HeaderContainer({ collapsed, setCollapsed }) {
         },
       },
     });
-
-    // Invalidate notifications cache
-    dispatch(baseApi.util.invalidateTags([tagTypes.notification]));
+    console.log("currentPath", currentPath);
 
     if (!currentPath?.includes("notification")) {
       setShowNotificationDot(true);
     }
+    // Invalidate notifications cache
+    dispatch(baseApi.util.invalidateTags([tagTypes.notification]));
   };
 
   // Listen to notifications

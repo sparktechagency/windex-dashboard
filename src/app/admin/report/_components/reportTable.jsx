@@ -1,47 +1,110 @@
 "use client";
 
-import { Table, Tag, Input } from "antd";
+import { Table, Tag, Input, message } from "antd";
 import { Search, CircleAlert } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import CustomTooltip from "@/components/CustomTooltip/CustomTooltip"; 
-import ReportModal from "./reportModal";
-const reportData = Array.from({ length: 5 }).map((_, inx) => ({
-  key: inx + 1,
-user:{  name: "Justina Ojuylub",
-    email:"user@gmial.com",
-  image:
-    "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
-},
-  reason: "Harassment", 
-  date: "27 Feb 2025", 
-}));
- 
+import CustomTooltip from "@/components/CustomTooltip/CustomTooltip";
+import { debounce } from "lodash";
+import dayjs from "dayjs";
+import ReportModal from "./ReportModal";
+import { useGetAllReportsQuery } from "@/redux/api/reportApi";
 
-export default function ReportReviewTable() {
+const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const [page, setPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const defaultLimit = 10;
+  const apiLimit = limit || defaultLimit;
 
-  // =============== Table columns ===============
+  // Debounced search handler
+  const debouncedSetSearchText = debounce((value) => {
+    setSearchText(value);
+    setPage(1); // Reset to page 1 on search
+  }, 500);
+
+  // Fetch reports with pagination and search
+  const {
+    data: reportsResponse,
+    isFetching,
+    isError,
+    error,
+  } = useGetAllReportsQuery({
+    page,
+    limit: apiLimit,
+    searchTerm: searchText,
+  });
+
+  const reportsData = reportsResponse?.data || [];
+  const meta = reportsResponse?.meta || {};
+
+  // Debugging logs
+  console.log("ReportReviewTable - reportsResponse:", reportsResponse);
+  console.log(
+    "ReportReviewTable - page:",
+    page,
+    "limit:",
+    apiLimit,
+    "searchTerm:",
+    searchText,
+  );
+  console.log("ReportReviewTable - meta:", meta);
+
+  // Map API data to table format
+  const tableData = reportsData.map((report, index) => ({
+    key: (page - 1) * apiLimit + index + 1,
+    user: {
+      name: report.author.name,
+      email: report.profile.email || "N/A",
+      image: report.author.photoUrl || "https://via.placeholder.com/50",
+    },
+    reason: report.reason,
+    date: dayjs(report.createdAt).format("DD MMM YYYY"),
+    status: report.status,
+    _id: report._id,
+  }));
+
+  // Limit data to specified limit
+  const displayData = limit ? tableData.slice(0, limit) : tableData;
+
+  // Error handling
+  if (isError) {
+    message.error(error?.data?.message || "Failed to fetch reports");
+  }
+
+  const paginationConfig = showPagination
+    ? {
+        current: page,
+        pageSize: apiLimit,
+        total: meta.total || 0,
+        onChange: (newPage) => {
+          console.log("Pagination changed to page:", newPage);
+          setPage(newPage);
+        },
+        showSizeChanger: false,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} of ${total} reports`,
+        style: { marginTop: "16px", display: "flex" },
+      }
+    : false;
+
   const columns = [
-    ,
     {
       title: "Profile",
       dataIndex: "user",
       render: (value, record) => (
         <div className="flex-center-start gap-x-2">
           <Image
-            src={value?.image}
-            alt="user profile"
+            src={value.image}
+            alt="User profile"
             width={50}
             height={50}
-            className="rounded-full aspect-square"
+            className="aspect-square rounded-full"
           />
-          <div className="">
-            <p>{value?.name}</p>
-            <p className=""> 
-              {record?.email}
-            </p>
+          <div>
+            <p>{value.name}</p>
+            <p className="text-gray-500">{value.email}</p>
           </div>
         </div>
       ),
@@ -54,17 +117,41 @@ export default function ReportReviewTable() {
       title: "Date",
       dataIndex: "date",
     },
-
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (value) => (
+        <Tag
+          color={
+            value === "approved"
+              ? "green"
+              : value === "denied"
+                ? "red"
+                : "orange"
+          }
+          className="capitalize"
+        >
+          {value}
+        </Tag>
+      ),
+      filters: [
+        { text: "Pending", value: "pending" },
+        { text: "Approved", value: "approved" },
+        { text: "Denied", value: "denied" },
+      ],
+      onFilter: (value, record) => record?.status?.startsWith(value),
+      filterSearch: true,
+    },
     {
       title: "Action",
       dataIndex: "",
-      render: (value, record) => (
+      render: (_, record) => (
         <div className="flex-center-start gap-x-3">
           <CustomTooltip title="View Details">
             <button
               onClick={() => {
-                setOpen((pre) => !pre);
                 setModalData(record);
+                setOpen(true);
               }}
               className="!rounded-full !shadow-none"
             >
@@ -77,29 +164,38 @@ export default function ReportReviewTable() {
   ];
 
   return (
-    <div>
+    <div className="mb-16">
+      <style jsx global>{`
+        .report-review-table .ant-table-pagination {
+          display: flex !important;
+          visibility: visible !important;
+          margin-top: 16px !important;
+        }
+      `}</style>
       <section className="my-6">
         <div className="flex-center-between">
-          <h4 className="text-[32px] font-semibold text-white">Report Profile Review</h4>
-
+          <h4 className="text-[32px] font-semibold text-white">
+            Report Profile Review
+          </h4>
           <div className="w-1/3">
             <Input
               placeholder="Search..."
               prefix={<Search className="mr-1 text-gray-400" size={22} />}
               className="!border-secondary h-11 !w-full !rounded-lg !border !text-base"
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => debouncedSetSearchText(e.target.value)}
             />
           </div>
         </div>
-
         <div className="my-5">
           <Table
             style={{ overflowX: "auto" }}
+            className="report-review-table"
             columns={columns}
-            dataSource={reportData}
+            dataSource={displayData}
+            loading={isFetching}
+            pagination={paginationConfig}
             scroll={{ x: "100%" }}
-          ></Table>
-
+          />
           <ReportModal
             open={open}
             setOpen={setOpen}
@@ -110,4 +206,6 @@ export default function ReportReviewTable() {
       </section>
     </div>
   );
-}
+};
+
+export default ReportReviewTable;
