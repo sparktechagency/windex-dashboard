@@ -12,21 +12,21 @@ const SETTINGS_LINKS = [
     label: "Personal Information",
     route: "/admin/profile",
   },
-  {
-    key: "privacy-policy",
-    label: "Privacy Policy",
-    route: "/admin/privacy-policy",
-  },
-  {
-    key: "terms-conditions",
-    label: "Terms & Conditions",
-    route: "/admin/terms-conditions",
-  },
-  {
-    key: "about-us",
-    label: "About Us",
-    route: "/admin/about-us",
-  },
+  // {
+  //   key: "privacy-policy",
+  //   label: "Privacy Policy",
+  //   route: "/admin/privacy-policy",
+  // },
+  // {
+  //   key: "terms-conditions",
+  //   label: "Terms & Conditions",
+  //   route: "/admin/terms-conditions",
+  // },
+  // {
+  //   key: "about-us",
+  //   label: "About Us",
+  //   route: "/admin/about-us",
+  // },
 ];
 
 export default function SettingsPage() {
