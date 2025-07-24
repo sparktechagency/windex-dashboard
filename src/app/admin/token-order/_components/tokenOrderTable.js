@@ -65,6 +65,15 @@ const TokenOrderTable = ({ limit = 10, showPagination = true }) => {
     userName: order.user.name,
     email: order.user.email,
     image: order.user.photoUrl || "https://via.placeholder.com/50",
+    address: [
+      order.user.street,
+      order.user.city,
+      order.user.state,
+      order.user.country,
+      order.user.zipCode,
+    ]
+      .filter(Boolean)
+      .join(", "),
     date: dayjs(order.createdAt).format("DD MMM YYYY"),
     token: order.package.token,
     status: order.status,
@@ -115,6 +124,11 @@ const TokenOrderTable = ({ limit = 10, showPagination = true }) => {
           </div>
         </div>
       ),
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      render: (value) => value || "N/A",
     },
     {
       title: "Date",

@@ -22,8 +22,8 @@ export default function PrivacyPolicyContainer() {
     useGetContentsQuery();
   const [updateFn, { isLoading }] = useUpdateContentMutation();
 
-  const privacyPolicyData =
-    privacyPolicyRes?.data?.data[0]?.privacyPolicy || "";
+  const privacyPolicyData = privacyPolicyRes?.data[0]?.privacyPolicy || "";
+  console.log("privacyPolicyData", privacyPolicyData);
 
   const onSubmit = async (data) => {
     try {

@@ -11,6 +11,10 @@ import { logout } from "@/redux/features/authSlice";
 import { useDispatch } from "react-redux";
 import { successToast } from "@/utils/customToast";
 import { Coins } from "lucide-react";
+import { User } from "lucide-react";
+import { NotepadText } from "lucide-react";
+import { Newspaper } from "lucide-react";
+import { Film } from "lucide-react";
 
 const SidebarContainer = ({ collapsed }) => {
   const dispatch = useDispatch();
@@ -89,7 +93,29 @@ const SidebarContainer = ({ collapsed }) => {
     {
       key: "report",
       icon: <TriangleAlert size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/report"}>Report Review</Link>,
+      label: <span>Report Review</span>,
+      children: [
+        {
+          key: "profile-report",
+          icon: <User size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/profile-report"}>Profile Report</Link>,
+        },
+        {
+          key: "wishlist-report",
+          icon: <NotepadText size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/wishlist-report"}>Wishlist Report</Link>,
+        },
+        {
+          key: "feed-report",
+          icon: <Newspaper size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/feed-report"}>Feed Report</Link>,
+        },
+        {
+          key: "reel-report",
+          icon: <Film size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/reel-report"}>Reel Report</Link>,
+        },
+      ],
     },
     {
       key: "settings",

@@ -64,6 +64,15 @@ const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
     description: wishlist.description,
     userName: wishlist.author.name,
     email: wishlist.author.email || "N/A",
+    address: [
+      wishlist.author.street,
+      wishlist.author.city,
+      wishlist.author.state,
+      wishlist.author.country,
+      wishlist.author.zipCode,
+    ]
+      .filter(Boolean)
+      .join(", "),
     date: dayjs(wishlist.createdAt).format("DD MMM YYYY"),
     token: wishlist.token,
     status: wishlist.status,
@@ -120,6 +129,11 @@ const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
     {
       title: "User Name",
       dataIndex: "userName",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      render: (value) => value || "N/A",
     },
     {
       title: "Date",

@@ -10,9 +10,8 @@ export default function CustomModal({
   children,
   title,
   className,
-  modalWidth
+  modalWidth,
 }) {
-  console.log('modalWidth', modalWidth);
   return (
     <Modal
       title={title}

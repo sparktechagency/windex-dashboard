@@ -24,7 +24,7 @@ const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
     setPage(1); // Reset to page 1 on search
   }, 500);
 
-  // Fetch reports with pagination and search
+  // Fetch reports with pagination, search, and modelType filter
   const {
     data: reportsResponse,
     isFetching,
@@ -34,6 +34,7 @@ const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
     page,
     limit: apiLimit,
     searchTerm: searchText,
+    modelType: "User",
   });
 
   const reportsData = reportsResponse?.data || [];
@@ -48,22 +49,33 @@ const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
     apiLimit,
     "searchTerm:",
     searchText,
+    "modelType:",
+    "User",
   );
   console.log("ReportReviewTable - meta:", meta);
 
   // Map API data to table format
-  const tableData = reportsData.map((report, index) => ({
-    key: (page - 1) * apiLimit + index + 1,
-    user: {
-      name: report.author.name,
-      email: report.profile.email || "N/A",
-      image: report.author.photoUrl || "https://via.placeholder.com/50",
-    },
-    reason: report.reason,
-    date: dayjs(report.createdAt).format("DD MMM YYYY"),
-    status: report.status,
-    _id: report._id,
-  }));
+  const tableData = reportsData.map((report, index) => {
+    const reportedProfile = {
+      name: report?.refference?.name || "N/A",
+      email: report?.refference?.email || "N/A",
+      image: report?.refference?.photoUrl || "https://via.placeholder.com/50",
+      bio: report?.refference?.bio,
+      username: report?.refference?.username,
+      profilePublic: report?.refference?.profilePublic,
+    };
+
+    return {
+      key: (page - 1) * apiLimit + index + 1,
+      user: reportedProfile,
+      reason: report.reason,
+      date: dayjs(report.createdAt).format("DD MMM YYYY"),
+      status: report.status,
+      _id: report._id,
+      modelType: report.modelType,
+      author: report.author, // Include author for modal
+    };
+  });
 
   // Limit data to specified limit
   const displayData = limit ? tableData.slice(0, limit) : tableData;
@@ -91,13 +103,13 @@ const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
 
   const columns = [
     {
-      title: "Profile",
+      title: "Reported Profile",
       dataIndex: "user",
       render: (value, record) => (
         <div className="flex-center-start gap-x-2">
           <Image
             src={value.image}
-            alt="User profile"
+            alt="Reported profile"
             width={50}
             height={50}
             className="aspect-square rounded-full"
@@ -150,7 +162,8 @@ const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
           <CustomTooltip title="View Details">
             <button
               onClick={() => {
-                setModalData(record);
+                setModalData(tableData[record.key - 1]);
+                console.log("record", record);
                 setOpen(true);
               }}
               className="!rounded-full !shadow-none"
@@ -175,7 +188,7 @@ const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
       <section className="my-6">
         <div className="flex-center-between">
           <h4 className="text-[32px] font-semibold text-white">
-            Report Profile Review
+            Profile Reports
           </h4>
           <div className="w-1/3">
             <Input

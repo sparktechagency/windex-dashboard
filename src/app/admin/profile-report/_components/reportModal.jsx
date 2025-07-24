@@ -37,24 +37,54 @@ export default function ReportModal({
     }
   };
 
+  // Reporter details from author object
+  const reporter = {
+    name: modalData?.author?.name || "N/A",
+    email: modalData?.author?.email || "N/A",
+  };
+
+  // Reported profile details from user object (mapped from refference in ReportReviewTable)
+  const reportedProfile = {
+    name: modalData?.user?.name || "N/A",
+    email: modalData?.user?.email || "N/A",
+    bio: modalData?.user?.bio || "N/A",
+    username: modalData?.user?.username || "N/A",
+    profilePublic: modalData?.user?.profilePublic ? "Yes" : "No",
+  };
+
+  console.log("modalData", modalData);
+
   return (
-    <CustomModal modalWidth={800} open={open} setOpen={setOpen} title="Report Details">
+    <CustomModal
+      modalWidth={800}
+      open={open}
+      setOpen={setOpen}
+      title="Profile Report Details"
+    >
       <div className="m-10">
         <div className="flex flex-col items-center justify-center gap-6">
           <MessageSquareWarning size={50} color="var(--primary-black)" />
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-            Report
+            Profile Report
           </h2>
         </div>
         <div className="my-5">
-          <RowData name="Author Name" value={modalData?.user?.name} />
+          <RowData name="Reporter Name" value={reporter.name} />
+          <RowData name="Reporter Email" value={reporter.email} />
+          <RowData name="Reported Profile Name" value={reportedProfile.name} />
           <RowData
             name="Reported Profile Email"
-            value={modalData?.user?.email}
+            value={reportedProfile.email}
           />
-          <RowData name="Reason" value={modalData?.reason} />
-          <RowData name="Status" value={modalData?.status} />
-          <RowData name="Date" value={modalData?.date} />
+          <RowData name="Bio" value={reportedProfile.bio} />
+          <RowData name="Username" value={reportedProfile.username} />
+          <RowData
+            name="Profile Public"
+            value={reportedProfile.profilePublic}
+          />
+          <RowData name="Report Reason" value={modalData?.reason} />
+          <RowData name="Report Status" value={modalData?.status} />
+          <RowData name="Report Date" value={modalData?.date} />
         </div>
         <div className="mt-6 flex justify-between">
           <button

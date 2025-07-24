@@ -22,7 +22,7 @@ export default function TermsConditionsContainer() {
 
   const [updateFn, { isLoading }] = useUpdateContentMutation();
 
-  const termsAndConditionsData = data?.data?.data[0]?.termsAndConditions || "";
+  const termsAndConditionsData = data?.data[0]?.termsAndConditions || "";
 
   const onSubmit = async (data) => {
     try {

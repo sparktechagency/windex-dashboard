@@ -23,7 +23,7 @@ export default function AboutUsContainer() {
 
   const [updateFn, { isLoading }] = useUpdateContentMutation();
 
-  const aboutUsData = aboutUsRes?.data?.data[0]?.aboutUs || "";
+  const aboutUsData = aboutUsRes?.data[0]?.aboutUs || "";
 
   const onSubmit = async (data) => {
     try {

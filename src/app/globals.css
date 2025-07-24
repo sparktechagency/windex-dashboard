@@ -256,3 +256,25 @@ td {
 .ant-dropdown-menu-item .ant-dropdown-menu-item-selected {
   color: black !important;
 }
+
+.ant-menu-submenu-title svg,
+.ant-menu-submenu-title i .ant-menu-submenu-title span a {
+  color: white !important;
+}
+
+:where(.css-dev-only-do-not-override-1pqe2za) a {
+  color: white !important;
+}
+
+:where(.css-dev-only-do-not-override-1pqe2za).ant-menu-inline.ant-menu-root
+  .ant-menu-item
+  > *,
+:where(.css-dev-only-do-not-override-1pqe2za).ant-menu-inline.ant-menu-root
+  .ant-menu-submenu-title
+  > * {
+  color: white !important;
+}
+
+:where(.css-dev-only-do-not-override-1o5g0o4).ant-input-number-outlined {
+  width: 100% !important;
+}
