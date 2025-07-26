@@ -43,6 +43,7 @@ export default function LoginForm() {
         setFormError(null);
       }
     } catch (error) {
+      console.log('error', error);
       setFormError(error?.data?.message || error?.error);
     }
   };
