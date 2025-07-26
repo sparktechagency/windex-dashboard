@@ -13,7 +13,7 @@ import { SuccessModal } from "@/utils/modalHook";
 import { setUser } from "@/redux/features/authSlice";
 import { jwtDecode } from "jwt-decode";
 import CustomFormError from "@/components/CustomFormError/CustomFormError";
-import { useState } from "react"; 
+import { useState } from "react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full px-6 py-8 rounded-none shadow-none shadow-primary-blue/10">
+    <div className="shadow-primary-blue/10 w-full rounded-none px-6 py-8 shadow-none">
       <section className="mb-8 space-y-2">
         <h4 className="text-3xl font-semibold">Login</h4>
         <p className="text-dark-gray">
@@ -56,7 +56,14 @@ export default function LoginForm() {
         </p>
       </section>
 
-      <FormWrapper onSubmit={onLoginSubmit} resolver={zodResolver(loginSchema)}>
+      <FormWrapper
+        defaultValues={{
+          email: "junayednoman05@gmail.com",
+          password: "encrypted",
+        }}
+        onSubmit={onLoginSubmit}
+        resolver={zodResolver(loginSchema)}
+      >
         <UInput
           name="email"
           type="email"
@@ -79,7 +86,7 @@ export default function LoginForm() {
           htmlType="submit"
           type="primary"
           size="large"
-          className="!h-10 w-full !font-semibold "
+          className="!h-10 w-full !font-semibold"
           loading={isLoading}
         >
           Sign In
@@ -87,7 +94,7 @@ export default function LoginForm() {
 
         <Link
           href="/forgot-password"
-          className="block mt-2 font-medium text-center text-primary-blue hover:text-primary-blue/85"
+          className="text-primary-blue hover:text-primary-blue/85 mt-2 block text-center font-medium"
         >
           I forgot my password
         </Link>

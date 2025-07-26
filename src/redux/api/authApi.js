@@ -27,7 +27,8 @@ const authApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/otp/verify-otp",
         method: "POST",
-        body: data,
+        body: { otp: data.otp },
+        headers: { token: `${data?.token}` },
       }),
 
       invalidatesTags: [tagTypes.otp],
@@ -46,11 +47,8 @@ const authApi = baseApi.injectEndpoints({
     forgotPassword: builder.mutation({
       query: (data) => ({
         url: "/auth/forgot-password",
-        method: "PATCH",
+        method: "POST",
         body: data,
-        headers: {
-          "Content-Type": "application/json",
-        },
       }),
 
       invalidatesTags: [tagTypes.user, tagTypes.auth],
@@ -65,17 +63,18 @@ const authApi = baseApi.injectEndpoints({
     updateProfile: builder.mutation({
       query: (data) => ({
         url: "/users/update-my-profile",
-        method: "PATCH",
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: [tagTypes.user, tagTypes.auth],
     }),
 
     resetPassword: builder.mutation({
-      query: (data) => ({
+      query: ({ data, token }) => ({
         url: "/auth/reset-password",
-        method: "PATCH",
+        method: "POST",
         body: data,
+        headers: { Authorization: `${token}` },
       }),
 
       invalidatesTags: [tagTypes.user, tagTypes.auth],
@@ -83,7 +82,7 @@ const authApi = baseApi.injectEndpoints({
     changePassword: builder.mutation({
       query: (data) => ({
         url: "/auth/change-password",
-        method: "PATCH",
+        method: "POST",
         body: data,
       }),
 

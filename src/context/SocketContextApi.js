@@ -3,7 +3,6 @@ import { createContext, useContext, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { getSocketUrl } from "@/config";
-import { successToast } from "@/utils/customToast";
 
 const SocketContext = createContext({});
 

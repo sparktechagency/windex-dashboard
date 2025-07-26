@@ -6,24 +6,31 @@
 
 :root {
   --font-montserrat: "Montserrat", sans-serif;
- 
+
   /* Custom Colors */
-  --primary: #6CC7FE;
-  --primary-black: #0B1739; 
+  --primary: #6cc7fe;
+  --primary-black: #0b1739;
   --primary-white: #f8fafc;
   --primary-blue: #1b71a7;
-  --primary-background: linear-gradient(to bottom, #7D19F0, #A06CF2, #C4A3F5, #D7C8F7, #E6EAF9);
-  --primary-background2:  linear-gradient(to bottom, #7D19F0, #E6EAF9);
+  --primary-background: linear-gradient(
+    to bottom,
+    #7d19f0,
+    #a06cf2,
+    #c4a3f5,
+    #d7c8f7,
+    #e6eaf9
+  );
+  --primary-background2: linear-gradient(to bottom, #7d19f0, #e6eaf9);
   --white: #fff;
-/* --color:#262e46; */
+  /* --color:#262e46; */
   --foundation-white-darker: rgb(89, 89, 89);
   --foundation-white-darker-50: rgba(89, 89, 89, 0.5);
   --foundation-brown-darker: rgb(50, 43, 37);
 
-  --input-border: #6CC7FE;
+  --input-border: #6cc7fe;
 
   --danger: #ca0b00;
-  --muted: #6CC7FE;
+  --muted: #6cc7fe;
 }
 
 * {
@@ -129,39 +136,39 @@ h4 {
 
 /* / Quotes / */
 .jodit-wysiwyg blockquote {
-  @apply p-4 bg-gray-100 border border-gray-200 rounded-lg;
+  @apply rounded-lg border border-gray-200 bg-gray-100 p-4;
 }
 
 blockquote {
-  @apply p-4 bg-gray-100 border border-gray-200 rounded-lg;
+  @apply rounded-lg border border-gray-200 bg-gray-100 p-4;
 }
 
 /* / Code blocks / */
 .jodit-wysiwyg pre,
 .jodit-wysiwyg code {
-  @apply px-4 py-2 font-mono text-white bg-gray-900 rounded-lg;
+  @apply rounded-lg bg-gray-900 px-4 py-2 font-mono text-white;
 }
 
 code {
-  @apply px-4 py-2 font-mono text-white bg-gray-900 rounded-lg;
+  @apply rounded-lg bg-gray-900 px-4 py-2 font-mono text-white;
 }
 pre {
-  @apply px-4 py-2 font-mono text-white bg-gray-900 rounded-lg;
+  @apply rounded-lg bg-gray-900 px-4 py-2 font-mono text-white;
 }
 
 /* / Unordered lists / */
 
 .jodit-wysiwyg ul {
-  @apply pl-8 list-disc list-inside;
+  @apply list-inside list-disc pl-8;
 }
 ul {
-  @apply pl-8 list-disc list-inside;
+  @apply list-inside list-disc pl-8;
 }
 .jodit-wysiwyg ol {
-  @apply pl-8 list-decimal list-inside;
+  @apply list-inside list-decimal pl-8;
 }
 ol {
-  @apply pl-8 list-decimal list-inside;
+  @apply list-inside list-decimal pl-8;
 }
 
 /* table {
@@ -246,7 +253,28 @@ td {
   width: 100% !important;
 }
 
+.ant-dropdown-menu-item .ant-dropdown-menu-item-selected {
+  color: black !important;
+}
 
-.ant-dropdown-menu-item .ant-dropdown-menu-item-selected{
-  color:black !important;
+.ant-menu-submenu-title svg,
+.ant-menu-submenu-title i .ant-menu-submenu-title span a {
+  color: white !important;
+}
+
+:where(.css-dev-only-do-not-override-1pqe2za) a {
+  color: white !important;
+}
+
+:where(.css-dev-only-do-not-override-1pqe2za).ant-menu-inline.ant-menu-root
+  .ant-menu-item
+  > *,
+:where(.css-dev-only-do-not-override-1pqe2za).ant-menu-inline.ant-menu-root
+  .ant-menu-submenu-title
+  > * {
+  color: white !important;
+}
+
+:where(.css-dev-only-do-not-override-1o5g0o4).ant-input-number-outlined {
+  width: 100% !important;
 }

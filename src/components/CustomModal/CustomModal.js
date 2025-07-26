@@ -10,12 +10,14 @@ export default function CustomModal({
   children,
   title,
   className,
+  modalWidth,
 }) {
   return (
     <Modal
       title={title}
       centered
       open={open}
+      width={modalWidth}
       setOpen={setOpen}
       footer={null}
       closeIcon={false}

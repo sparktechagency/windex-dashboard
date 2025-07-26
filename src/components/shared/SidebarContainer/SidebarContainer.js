@@ -9,8 +9,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/redux/features/authSlice";
 import { useDispatch } from "react-redux";
-import { successToast } from "@/utils/customToast"; 
-import { Coins } from "lucide-react"; 
+import { successToast } from "@/utils/customToast";
+import { Coins } from "lucide-react";
+import { User } from "lucide-react";
+import { NotepadText } from "lucide-react";
+import { Newspaper } from "lucide-react";
+import { Film } from "lucide-react";
 
 const SidebarContainer = ({ collapsed }) => {
   const dispatch = useDispatch();
@@ -20,7 +24,6 @@ const SidebarContainer = ({ collapsed }) => {
   // Logout handler
   const handleLogout = (e) => {
     if (e.key !== "logout") return;
-
     dispatch(logout());
     router.refresh();
     router.push("/login");
@@ -73,9 +76,9 @@ const SidebarContainer = ({ collapsed }) => {
       label: <Link href={"/admin/dashboard"}>Dashboard</Link>,
     },
     {
-      key: "account-details",
+      key: "users",
       icon: <Users2 size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/account-details"}>Account Details</Link>,
+      label: <Link href={"/admin/users"}>Users</Link>,
     },
     {
       key: "Wish List",
@@ -90,7 +93,29 @@ const SidebarContainer = ({ collapsed }) => {
     {
       key: "report",
       icon: <TriangleAlert size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/report"}>Report Review</Link>,
+      label: <span>Report Review</span>,
+      children: [
+        {
+          key: "profile-report",
+          icon: <User size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/profile-report"}>Profile Report</Link>,
+        },
+        {
+          key: "wishlist-report",
+          icon: <NotepadText size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/wishlist-report"}>Wishlist Report</Link>,
+        },
+        {
+          key: "feed-report",
+          icon: <Newspaper size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/feed-report"}>Feed Report</Link>,
+        },
+        {
+          key: "reel-report",
+          icon: <Film size={21} strokeWidth={2} />,
+          label: <Link href={"/admin/reel-report"}>Reel Report</Link>,
+        },
+      ],
     },
     {
       key: "settings",
@@ -123,7 +148,7 @@ const SidebarContainer = ({ collapsed }) => {
       }}
       className="scroll-hide"
     >
-      <div className="flex flex-col items-center justify-center mb-6 gap-y-5">
+      <div className="mb-6 flex flex-col items-center justify-center gap-y-5">
         <Link href={"/"}>{collapsed ? <LogoSmall /> : <Logo />}</Link>
       </div>
 

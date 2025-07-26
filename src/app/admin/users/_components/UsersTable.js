@@ -1,27 +1,77 @@
 "use client";
 
 import CustomConfirm from "@/components/CustomConfirm/CustomConfirm";
-import { Table, Tooltip } from "antd";
-import { Eye } from "lucide-react";
+import { Table, Tooltip, message } from "antd";
+import { Eye, UserRoundX, UserRoundCheck } from "lucide-react";
 import Image from "next/image";
 import userImage from "@/assets/images/user-avatar-lg.png";
 import { useState } from "react";
 import ProfileModal from "@/components/SharedModals/ProfileModal";
-import { UserRoundX } from "lucide-react";
+import {
+  useGetAllUsersQuery,
+  useChangeUserStatusMutation,
+} from "@/redux/api/userApi";
+import dayjs from "dayjs";
 
-const usersData = Array.from({ length: 5 }).map((_, inx) => ({
-  key: inx + 1,
-  name: "Justina Ojuylub",
-  userImg: userImage,
-  email: "justina@gmail.com",
-  contact: "+1234567890",
-  date: "11 oct 24, 11:10 PM",
-}));
-
-export default function UsersTable() {
+const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [page, setPage] = useState(1);
+  const defaultLimit = 10;
+  const apiLimit = limit || defaultLimit;
 
-  // =============== Table columns ===============
+  // Fetch users data with pagination
+  const {
+    data: usersResponse,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGetAllUsersQuery({
+    page,
+    limit: apiLimit,
+    searchTerm,
+  });
+
+  const [changeUserStatus] = useChangeUserStatusMutation();
+
+  const usersData = usersResponse?.data || [];
+  const meta = usersResponse?.meta || {};
+
+  // Map API data to table format
+  const tableData = usersData.map((user, index) => ({
+    key: (page - 1) * apiLimit + index + 1,
+    name: user.name,
+    userImg: user.photoUrl || userImage,
+    email: user.email,
+    date: dayjs(user.createdAt).format("DD MMM YY, hh:mm A"),
+    _id: user._id,
+    status: user.status, // Include status for block/unblock toggle
+  }));
+
+  // Limit data to specified limit (e.g., 5 for dashboard)
+  const displayData = limit ? tableData.slice(0, limit) : tableData;
+
+  // Error handling
+  if (isError) {
+    message.error(error?.data?.message || "Failed to fetch users");
+  }
+
+  const paginationConfig = showPagination
+    ? {
+        current: page,
+        pageSize: apiLimit,
+        total: meta.total || 0,
+        onChange: (newPage) => {
+          console.log("Pagination changed to page:", newPage);
+          setPage(newPage);
+        },
+        showSizeChanger: false,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} of ${total} users`,
+      }
+    : false;
+
   const columns = [
     {
       title: "Sl. No.",
@@ -54,18 +104,48 @@ export default function UsersTable() {
     },
     {
       title: "Action",
-      render: () => (
+      render: (_, record) => (
         <div className="flex-center-start gap-x-4">
           <Tooltip title="Show Details">
-            <button onClick={() => setShowProfileModal(true)}>
+            <button
+              onClick={() => {
+                setSelectedUser(record);
+                setShowProfileModal(true);
+              }}
+            >
               <Eye color="var(--secondary)" size={23} />
             </button>
           </Tooltip>
-
-          <Tooltip title="Block User">
-            <CustomConfirm description="Are you sure you want to block this user?">
+          <Tooltip
+            title={record.status === "blocked" ? "Unblock User" : "Block User"}
+          >
+            <CustomConfirm
+              title={"Change User Status"}
+              description={`Are you sure you want to ${
+                record.status === "blocked" ? "unblock" : "block"
+              } this user?`}
+              onConfirm={async () => {
+                try {
+                  await changeUserStatus({
+                    userId: record._id,
+                    status: record.status === "blocked" ? "active" : "blocked",
+                  }).unwrap();
+                  message.success(
+                    `User ${record.status === "blocked" ? "unblocked" : "blocked"} successfully`,
+                  );
+                  refetch();
+                } catch (err) {
+                  console.log("err", err);
+                  message.error("Failed to change user status");
+                }
+              }}
+            >
               <button>
-                <UserRoundX color="var(--danger)" size={22} />
+                {record.status === "blocked" ? (
+                  <UserRoundCheck color="green" size={22} />
+                ) : (
+                  <UserRoundX color="var(--danger)" size={22} />
+                )}
               </button>
             </CustomConfirm>
           </Tooltip>
@@ -75,15 +155,23 @@ export default function UsersTable() {
   ];
 
   return (
-    <div>
+    <div className="mb-16">
       <Table
         style={{ overflowX: "auto" }}
+        className="users-table"
         columns={columns}
-        dataSource={usersData}
+        dataSource={displayData}
+        loading={isFetching}
+        pagination={paginationConfig}
         scroll={{ x: "100%" }}
-      ></Table>
-
-      <ProfileModal open={showProfileModal} setOpen={setShowProfileModal} />
+      />
+      <ProfileModal
+        open={showProfileModal}
+        setOpen={setShowProfileModal}
+        user={selectedUser}
+      />
     </div>
   );
-}
+};
+
+export default UsersTable;

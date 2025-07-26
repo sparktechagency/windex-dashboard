@@ -40,13 +40,13 @@ export default function HeaderContainer({ collapsed, setCollapsed }) {
         },
       },
     });
-
-    // Invalidate notifications cache
-    dispatch(baseApi.util.invalidateTags([tagTypes.notification]));
+    console.log("currentPath", currentPath);
 
     if (!currentPath?.includes("notification")) {
       setShowNotificationDot(true);
     }
+    // Invalidate notifications cache
+    dispatch(baseApi.util.invalidateTags([tagTypes.notification]));
   };
 
   // Listen to notifications
@@ -128,7 +128,7 @@ export default function HeaderContainer({ collapsed, setCollapsed }) {
             <div className="absolute right-2 top-1 size-3 rounded-full bg-[#f48b2f]" />
           )}
 
-          <button className="p-2 bg-white rounded-full bg-primary-black">
+          <button className="rounded-full bg-primary-black bg-white p-2">
             <Bell stroke="var(--primary-blue)" size={22} />
           </button>
         </Link>
@@ -136,11 +136,11 @@ export default function HeaderContainer({ collapsed, setCollapsed }) {
         {/* User */}
         <Link
           href={"/admin/profile"}
-          className="flex items-center group gap-x-2 text-primary-black hover:text-primary-blue"
+          className="hover:text-primary-blue group flex items-center gap-x-2 text-primary-black"
         >
-          {myProfile?.image ? (
+          {myProfile?.photoUrl ? (
             <Image
-              src={myProfile?.image}
+              src={myProfile?.photoUrl}
               alt={`Avatar image of admin: ${myProfile?.name}`}
               width={52}
               height={52}
@@ -154,12 +154,12 @@ export default function HeaderContainer({ collapsed, setCollapsed }) {
               }}
               size="large"
             >
-              {myProfile?.name && myProfile?.name[0]}
+              {myProfile?.name && myProfile?.name}
             </Avatar>
           )}
 
           <h4 className="text-lg font-semibold text-white">
-            {myProfile?.name}
+            {myProfile?.name?.split(" ")[0]}
           </h4>
         </Link>
       </div>

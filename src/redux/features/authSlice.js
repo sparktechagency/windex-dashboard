@@ -13,18 +13,23 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       const { user, token } = action.payload;
-
+      console.log("action.payload", user, token);
       state.user = user;
       state.token = token;
 
       // Set token to cookie for middleware accessibility
-      Cookies.set("prime-pilates-access-token", token, { path: "/" });
+      Cookies.set("windex-access-token", token, { path: "/" });
     },
 
     logout: (state) => {
+      console.log("logout222");
       // Remove token for cookies
-      Cookies.remove("prime-pilates-access-token", { path: "/login" });
-      removeFromSessionStorage("prime-pilates-access-token");
+      try {
+        Cookies.remove("windex-access-token");
+        removeFromSessionStorage("windex-access-token");
+      } catch (err) {
+        console.log("error", err);
+      }
 
       state.user = null;
       state.token = null;

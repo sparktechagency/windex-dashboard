@@ -13,8 +13,8 @@ import {
 
 const CustomAreaChart = ({ chartName, data, setIncomeYear }) => {
   return (
-    <div className="w-full p-6 rounded-xl bg-primary-black md:w-1/2">
-      <div className="flex items-center justify-between mb-10">
+    <div className="w-full rounded-xl bg-primary-black p-6 md:w-1/2">
+      <div className="mb-10 flex items-center justify-between">
         <h1 className="text-xl font-medium text-primary-white">
           {chartName} Overview
         </h1>
@@ -86,7 +86,7 @@ const CustomAreaChart = ({ chartName, data, setIncomeYear }) => {
           <Area
             activeDot={{ fill: "var(--primary)" }}
             type="monotone"
-            dataKey="income"
+            dataKey="amount"
             strokeWidth={0}
             stroke="var(--primary)"
             fill="url(#gradientFill)" // Reference the gradient by id - declared top of the component

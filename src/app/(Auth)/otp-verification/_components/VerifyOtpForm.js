@@ -1,25 +1,19 @@
 "use client";
 
-import CustomFormError from "@/components/CustomFormError/CustomFormError";
+import { zodResolver } from "@hookform/resolvers/zod";
 import FormWrapper from "@/components/Form/FormWrapper";
 import UOtpInput from "@/components/Form/UOtpInput";
 import {
   useResendOtpMutation,
   useVerifyOtpMutation,
 } from "@/redux/api/authApi";
-import { errorToast, successToast } from "@/utils/customToast";
 import { ErrorModal, SuccessModal } from "@/utils/modalHook";
-import {
-  getFromSessionStorage,
-  removeFromSessionStorage,
-  setToSessionStorage,
-} from "@/utils/sessionStorage";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "antd";
+import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
+import CustomFormError from "@/components/CustomFormError/CustomFormError";
 import { z } from "zod";
 
 const otpValidationSchema = z.object({
@@ -38,61 +32,73 @@ export default function VerifyOtpForm() {
   // Handle Resend OTP functionality
   const handleResendOtp = async () => {
     try {
-      const res = await resendOtp({
-        email: jwtDecode(getFromSessionStorage("forgotPassToken"))?.email,
-      }).unwrap();
+      const token = Cookies.get("forgotPassToken");
+      if (!token) {
+        throw new Error("No token found for OTP resend");
+      }
+      const { email } = jwtDecode(token);
+      const res = await resendOtp({ email }).unwrap();
 
       if (res?.success) {
-        successToast("OTP re-sent successful");
-        setToSessionStorage("forgotPassToken", res?.data?.token);
+        SuccessModal("OTP re-sent successfully", "Check your email for the new OTP");
+        Cookies.set("forgotPassToken", res?.data?.token, {
+          expires: 1 / 24, // 1 hour
+          secure: true,
+          sameSite: "Strict",
+        });
 
-        // Disable resend button and start the timer
+        // Disable resend button and start timer
         setIsResendDisabled(true);
-
-        // Set the timer for 3 minutes (180 seconds)
         setTimer(180);
 
-        // Countdown every second
         const countdownInterval = setInterval(() => {
           setTimer((prev) => {
             if (prev === 1) {
               clearInterval(countdownInterval);
-              setIsResendDisabled(false); // Re-enable the button after the timer ends
+              setIsResendDisabled(false);
             }
             return prev - 1;
           });
         }, 1000);
       }
     } catch (error) {
-      errorToast(error?.data?.message || error?.message);
+      ErrorModal(error?.data?.message || error?.message || "Failed to resend OTP");
     }
   };
 
-  // Format the timer to MM:SS
+  // Format timer to MM:SS
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
+  // Handle OTP verification
   const handleVerifyOtp = async (data) => {
     try {
-      const res = await verifyOtp({ otp: data.otp }).unwrap();
+      const token = Cookies.get("forgotPassToken");
+      if (!token) {
+        throw new Error("No token found for OTP verification");
+      }
+
+      const res = await verifyOtp({ otp: data.otp, token }).unwrap();
 
       if (res?.success) {
-        SuccessModal("OTP Verification Successful");
+        SuccessModal("OTP Verification Successful", "You can now set a new password");
 
-        // remove forgotPassToken
-        removeFromSessionStorage("forgotPassToken");
+        // Remove forgotPassToken and set new token
+        Cookies.remove("forgotPassToken");
+        Cookies.set("changePassToken", res?.data?.token, {
+          expires: 7, // 7 days, adjust as needed
+          secure: true,
+          sameSite: "Strict",
+        });
 
-        // set change-pass token
-        setToSessionStorage("changePassToken", res?.data?.token);
-
-        // navigate to login page
+        // Redirect to set-new-password
         router.push("/set-new-password");
       }
     } catch (error) {
-      ErrorModal(error?.data?.message || error?.message);
+      setFormError(error?.data?.message || "Failed to verify OTP");
     }
   };
 
@@ -101,7 +107,7 @@ export default function VerifyOtpForm() {
       <section className="mb-8 space-y-2">
         <h4 className="text-3xl font-semibold">Verify OTP</h4>
         <p className="text-dark-gray">
-          Enter the otp that we&apos;ve sent to your email
+          Enter the OTP that we&apos;ve sent to your email
         </p>
       </section>
 
@@ -116,6 +122,7 @@ export default function VerifyOtpForm() {
           type="primary"
           size="large"
           className="!h-10 w-full"
+          loading={isVerifyOtpLoading}
         >
           Submit
         </Button>
