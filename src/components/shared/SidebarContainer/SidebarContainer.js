@@ -4,7 +4,16 @@ import "./Sidebar.css";
 import LogoSmall from "@/assets/logos/LogoSmall";
 import { Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { Users2, LogOut, House, Settings, TriangleAlert } from "lucide-react";
+import {
+  Users2,
+  LogOut,
+  House,
+  Settings,
+  TriangleAlert,
+  ChartColumnDecreasing,
+  TicketSlash,
+  BookHeart,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/redux/features/authSlice";
@@ -76,14 +85,24 @@ const SidebarContainer = ({ collapsed }) => {
       label: <Link href={"/admin/dashboard"}>Dashboard</Link>,
     },
     {
+      key: "analytics",
+      icon: <ChartColumnDecreasing size={21} strokeWidth={2} />,
+      label: <Link href={"/admin/analytics"}>Analytics</Link>,
+    },
+    {
       key: "users",
       icon: <Users2 size={21} strokeWidth={2} />,
       label: <Link href={"/admin/users"}>Users</Link>,
     },
     {
       key: "Wish List",
-      icon: wishlist,
+      icon: <BookHeart />,
       label: <Link href={"/admin/wishlist"}>Wish List</Link>,
+    },
+    {
+      key: "Refund Requests",
+      icon: <TicketSlash />,
+      label: <Link href={"/admin/refund-request"}>Refund Request</Link>,
     },
     {
       key: "tokenOrder",

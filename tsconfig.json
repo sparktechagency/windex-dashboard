@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
@@ -30,9 +26,12 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/app/admin/packages/components/TokenPackageModal.jsx", "src/app/admin/packages/components/packageTable.jsx", "src/app/admin/packages/components/TokenPackageEditModal.jsx"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "**/*.tsx",
+    "src/app/admin/packages/components/TokenPackageModal.jsx",
+    "src/app/admin/packages/components/packageTable.jsx",
+    "src/app/admin/packages/components/TokenPackageEditModal.jsx",
+    "src/app/admin/analytics/_components/UserOverAnalytics.jsx",
+    "src/app/admin/refund-request/_components/RefundTable.js"
+  ],
+  "exclude": ["node_modules"]
 }

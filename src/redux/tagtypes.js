@@ -21,6 +21,7 @@ export const tagTypes = {
   dashboardData: "DashboardData",
   metaData: "MetaData",
   wishlist: "Wishlist",
+  refundRequest: "RefundRequest",
   reports: "Reports",
 };
 
@@ -49,4 +50,5 @@ export const tagTypesList = [
   tagTypes.metaData,
   tagTypes.wishlist,
   tagTypes.reports,
+  tagTypes.refundRequest,
 ];
