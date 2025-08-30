@@ -21,7 +21,7 @@ const wishlistApi = baseApi.injectEndpoints({
     changeWishlistStatus: builder.mutation({
       query: ({ id, data }) => ({
         url: `/wishlists/${id}`,
-        method: "PATCH",
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: [tagTypes.wishlist],
