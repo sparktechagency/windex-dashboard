@@ -15,7 +15,7 @@ import {
 
 const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const [open, setOpen] = useState(false);
-  const [selectedWishlist, setSelectedWishlist] = useState(null);
+  const [selectedreqeust, setSelectedreqeust] = useState(null);
   const [page, setPage] = useState(1);
   const [denyReason, setDenyReason] = useState("");
   const defaultLimit = 10;
@@ -34,35 +34,35 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const meta = refundResponse?.meta || {};
 
   // Debugging logs
-  console.log("WishListTable - meta:", meta);
-  console.log("WishListTable - showPagination:", showPagination);
+  console.log("reqeustTable - meta:", meta);
+  console.log("reqeustTable - showPagination:", showPagination);
 
   // Map API data to table format
-  const tableData = refundData.map((wishlist, index) => ({
+  const tableData = refundData.map((reqeust, index) => ({
     key: (page - 1) * apiLimit + index + 1,
-    title: wishlist.order.title,
+    title: reqeust.order.title,
     image:
-      wishlist.order.content[0] ||
-      wishlist.author.photoUrl ||
+      reqeust.order.content[0] ||
+      reqeust.author.photoUrl ||
       "https://via.placeholder.com/50",
-    description: wishlist.order.description,
-    userName: wishlist.author.name,
-    email: wishlist.author.email || "N/A",
+    description: reqeust.order.description,
+    userName: reqeust.author.name,
+    email: reqeust.author.email || "N/A",
     address: [
-      wishlist.author.street,
-      wishlist.author.city,
-      wishlist.author.state,
-      wishlist.author.country,
-      wishlist.author.zipCode,
+      reqeust.author.street,
+      reqeust.author.city,
+      reqeust.author.state,
+      reqeust.author.country,
+      reqeust.author.zipCode,
     ]
       .filter(Boolean)
       .join(", "),
-    date: dayjs(wishlist.createdAt).format("DD MMM YYYY"),
-    token: wishlist.order.token,
-    status: wishlist.status,
-    issue: wishlist.issues.slice(0, 70) + "...",
-    trnId: wishlist.contentMeta?._id || "N/A",
-    _id: wishlist._id,
+    date: dayjs(reqeust.createdAt).format("DD MMM YYYY"),
+    token: reqeust.order.token,
+    status: reqeust.status,
+    issue: reqeust.issues.slice(0, 70) + "...",
+    trnId: reqeust.contentMeta?._id || "N/A",
+    _id: reqeust._id,
   }));
 
   // Limit data to specified limit
@@ -70,7 +70,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
 
   // Error handling
   if (isError) {
-    message.error(error?.data?.message || "Failed to fetch wishlists");
+    message.error(error?.data?.message || "Failed to fetch reqeusts");
   }
 
   const paginationConfig = showPagination
@@ -84,7 +84,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
         },
         showSizeChanger: false,
         showTotal: (total, range) =>
-          `${range[0]}-${range[1]} of ${total} wishlists`,
+          `${range[0]}-${range[1]} of ${total} reqeusts`,
         style: { marginTop: "16px", display: "flex" },
       }
     : false;
@@ -193,7 +193,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
           <CustomTooltip title="View Details">
             <button
               onClick={() => {
-                setSelectedWishlist(record);
+                setSelectedreqeust(record);
                 setOpen(true);
               }}
               className="!rounded-full !shadow-none"
@@ -202,7 +202,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
             </button>
           </CustomTooltip>
           {record.status !== "approved" && (
-            <CustomTooltip title="Approve Wishlist">
+            <CustomTooltip title="Approve Request">
               <button
                 className="!rounded-full !shadow-none"
                 onClick={async () => {
@@ -211,9 +211,9 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
                       id: record._id,
                       data: { status: "approved" },
                     }).unwrap();
-                    message.success("Wishlist approved successfully");
+                    message.success("reqeust approved successfully");
                   } catch (err) {
-                    message.error("Failed to approve wishlist");
+                    message.error("Failed to approve reqeust");
                   }
                 }}
               >
@@ -223,6 +223,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
           )}
           {record.status !== "denied" && (
             <CustomConfirm
+              title={"Deny Request"}
               description={
                 <div>
                   <p>Are you sure you want to deny this request?</p>
@@ -234,36 +235,21 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
                     id: record._id,
                     data: { status: "denied", reason: denyReason },
                   }).unwrap();
-                  message.success("Wishlist denied successfully");
+                  message.success("reqeust denied successfully");
                   setDenyReason(""); // Reset reason
                 } catch (err) {
-                  message.error("Failed to deny wishlist");
+                  message.error("Failed to deny reqeust");
                 }
               }}
               onCancel={() => setDenyReason("")} // Reset reason on cancel
             >
               <button className="!rounded-full !shadow-none">
-                <CustomTooltip title="Deny Wishlist">
+                <CustomTooltip title="Deny reqeust">
                   <XCircle className="text-red-500" size={20} />
                 </CustomTooltip>
               </button>
             </CustomConfirm>
           )}
-          <CustomTooltip title="Remove Wishlist">
-            <button
-              className="!rounded-full !shadow-none"
-              onClick={async () => {
-                try {
-                  await deleteWishlist(record._id).unwrap();
-                  message.success("Wishlist deleted successfully");
-                } catch (err) {
-                  message.error("Failed to delete wishlist");
-                }
-              }}
-            >
-              <Trash2 className="text-red-500" size={20} />
-            </button>
-          </CustomTooltip>
         </div>
       ),
     },
@@ -273,7 +259,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
     <div className="mb-16">
       <style jsx global>
         {`
-          .wishlist-table .ant-table-pagination {
+          .reqeust-table .ant-table-pagination {
             display: flex !important;
             visibility: visible !important;
             margin-top: 16px !important;
@@ -281,11 +267,11 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
         `}
       </style>
       {displayData.length === 0 && !isFetching ? (
-        <div>No wishlists available</div>
+        <div>No reqeusts available</div>
       ) : (
         <Table
           style={{ overflowX: "auto" }}
-          className="wishlist-table"
+          className="reqeust-table"
           columns={columns}
           dataSource={displayData}
           loading={isFetching}
@@ -296,7 +282,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
       <RefundDetailsModal
         open={open}
         setOpen={setOpen}
-        wishlist={selectedWishlist}
+        reqeust={selectedreqeust}
       />
     </div>
   );

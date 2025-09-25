@@ -9,7 +9,7 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "**",
-      },
+      }
     ],
   },
   redirects: async () => {
