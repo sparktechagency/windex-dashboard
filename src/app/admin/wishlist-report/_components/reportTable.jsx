@@ -6,7 +6,7 @@ import { useState } from "react";
 import CustomTooltip from "@/components/CustomTooltip/CustomTooltip";
 import { debounce } from "lodash";
 import dayjs from "dayjs";
-import ReportModal from "./ReportModal";
+import ReportModal from "./reportModal";
 import { useGetAllReportsQuery } from "@/redux/api/reportApi";
 
 const ReportReviewTable = ({ limit = 10, showPagination = true }) => {
