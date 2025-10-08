@@ -32,17 +32,13 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const [changeRefundStatus] = useChangeRefundStatusMutation();
 
   const meta = refundResponse?.meta || {};
-
-  // Debugging logs
-  console.log("reqeustTable - meta:", meta);
-  console.log("reqeustTable - showPagination:", showPagination);
-
+  
   // Map API data to table format
   const tableData = refundData.map((reqeust, index) => ({
     key: (page - 1) * apiLimit + index + 1,
     title: reqeust.order.title,
     image:
-      reqeust.order.content[0] ||
+      reqeust.order.content ||
       reqeust.author.photoUrl ||
       "https://via.placeholder.com/50",
     description: reqeust.order.description,
