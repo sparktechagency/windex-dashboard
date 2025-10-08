@@ -9,26 +9,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { DatePicker } from "antd";
-import dayjs from "dayjs";
 
-const CustomBarChart = ({ chartName, data, setJoinYear }) => {
+const CustomBarChart = ({ chartName, data }) => {
   return (
     <div className="mary w-full rounded-xl bg-primary-black p-6 md:w-1/2">
       <div className="mb-10 flex items-center justify-between gap-2 lg:flex-wrap xl:flex-nowrap">
         <h1 className="text-xl font-medium text-white">{chartName} Overview</h1>
-
-        <div className="space-x-3">
-          <DatePicker
-            onChange={(date, dateString) => setJoinYear(dateString)}
-            picker="year"
-            defaultValue={dayjs()}
-            style={{ height: "35px", border: "none" }}
-            disabledDate={(current) =>
-              current && current > dayjs().endOf("year")
-            }
-          />
-        </div>
       </div>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -43,7 +29,7 @@ const CustomBarChart = ({ chartName, data, setJoinYear }) => {
           barSize={20}
         >
           <XAxis
-            dataKey="month"
+            dataKey="year"
             scale="point"
             padding={{ left: 10, right: 10 }}
             tickMargin={10}

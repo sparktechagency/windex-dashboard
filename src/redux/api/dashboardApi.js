@@ -11,7 +11,15 @@ const dashboardApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.metaData],
     }),
+    getAnalytics: builder.query({
+      query: (query) => ({
+        url: `/meta/analysis`,
+        method: "GET",
+        params: query,
+      }),
+      providesTags: [tagTypes.analytics],
+    }),
   }),
 });
 
-export const {useGetMetaDataQuery} = dashboardApi;
+export const { useGetMetaDataQuery, useGetAnalyticsQuery } = dashboardApi;

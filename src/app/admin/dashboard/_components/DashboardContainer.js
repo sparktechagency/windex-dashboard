@@ -4,8 +4,6 @@ import CustomBarChart from "@/components/CustomBarChart";
 import CustomCountUp from "@/components/CustomCountUp/CustomCountUp";
 import CustomAreaChart from "@/components/CustomAreaChart";
 import PageLoader from "@/components/shared/PageLoader/PageLoader";
-import { useState } from "react";
-import dayjs from "dayjs";
 import { useGetMetaDataQuery } from "@/redux/api/dashboardApi";
 import { Users } from "lucide-react";
 import { ClipboardList } from "lucide-react";
@@ -13,21 +11,14 @@ import { DollarSign } from "lucide-react";
 import UsersTable from "../../users/_components/UsersTable";
 
 export default function DashboardContainer() {
-  const [userYear, setUserYear] = useState(dayjs().year());
-  const [incomeYear, setIncomeYear] = useState(dayjs().year());
+  const { data: dashboardDataRes, isLoading } = useGetMetaDataQuery();
 
-  const query = {
-    user_year: userYear,
-    earning_year: incomeYear,
-  };
-
-  const { data: dashboardDataRes, isLoading } = useGetMetaDataQuery(query);
   const dashboardData = dashboardDataRes?.data || {};
 
   if (isLoading) {
     return <PageLoader />;
   }
-
+  console.log("dashboardData", dashboardData?.totalRevenue);
   const userStats = [
     {
       key: "users",
@@ -78,15 +69,10 @@ export default function DashboardContainer() {
       </section>
 
       <section className="flex-center-between flex-col gap-10 lg:flex-row">
-        <CustomBarChart
-          chartName="Users"
-          data={dashboardData?.userOverview}
-          setJoinYear={setUserYear}
-        />
+        <CustomBarChart chartName="Users" data={dashboardData?.userOverview} />
         <CustomAreaChart
           chartName="Earnings"
           data={dashboardData?.earningOverview}
-          setIncomeYear={setIncomeYear}
         />
       </section>
 

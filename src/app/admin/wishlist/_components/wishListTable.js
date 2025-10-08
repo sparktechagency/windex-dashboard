@@ -58,8 +58,8 @@ const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
     key: (page - 1) * apiLimit + index + 1,
     title: wishlist.title,
     image:
-      wishlist.content[0] ||
-      wishlist.author.photoUrl ||
+      wishlist?.content ||
+      wishlist?.author?.photoUrl ||
       "https://via.placeholder.com/50",
     description: wishlist.description,
     userName: wishlist.author.name,

@@ -13,7 +13,6 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 
 const UserOverAnalytics = ({ chartName, data, setJoinYear }) => {
-  console.log('data', data);
   return (
     <div className="mary w-full rounded-xl bg-primary-black p-6 md:w-1/2">
       <div className="mb-10 flex items-center justify-between gap-2 lg:flex-wrap xl:flex-nowrap">
@@ -44,7 +43,7 @@ const UserOverAnalytics = ({ chartName, data, setJoinYear }) => {
           barSize={20}
         >
           <XAxis
-            dataKey="year"
+            dataKey="month"
             scale="point"
             padding={{ left: 10, right: 10 }}
             tickMargin={10}

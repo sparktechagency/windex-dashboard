@@ -23,6 +23,7 @@ export const tagTypes = {
   wishlist: "Wishlist",
   refundRequest: "RefundRequest",
   reports: "Reports",
+  analytics: "Analytics",
 };
 
 export const tagTypesList = [
@@ -51,4 +52,5 @@ export const tagTypesList = [
   tagTypes.wishlist,
   tagTypes.reports,
   tagTypes.refundRequest,
+  tagTypes.analytics,
 ];

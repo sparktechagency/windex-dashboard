@@ -1,4 +1,6 @@
 "use client";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
 import {
   AreaChart,
   Area,
@@ -9,13 +11,24 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const CustomAreaChart = ({ chartName, data }) => {
+const EarningAnalytics = ({ chartName, data, setYear }) => {
   return (
     <div className="w-full rounded-xl bg-primary-black p-6 md:w-1/2">
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-xl font-medium text-primary-white">
           {chartName} Overview
         </h1>
+        <div className="space-x-3">
+          <DatePicker
+            onChange={(date, dateString) => setYear(dateString)}
+            picker="year"
+            defaultValue={dayjs()}
+            style={{ height: "35px", border: "none" }}
+            disabledDate={(current) =>
+              current && current > dayjs().endOf("year")
+            }
+          />
+        </div>
       </div>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -38,7 +51,7 @@ const CustomAreaChart = ({ chartName, data }) => {
             tickMargin={10}
             axisLine={false}
             tickLine={false}
-            dataKey="year"
+            dataKey="month"
             tick={{ fill: "lightGray" }}
           />
 
@@ -84,4 +97,4 @@ const CustomAreaChart = ({ chartName, data }) => {
   );
 };
 
-export default CustomAreaChart;
+export default EarningAnalytics;

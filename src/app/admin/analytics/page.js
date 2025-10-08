@@ -1,4 +1,4 @@
-import AnalyticsContainer from "./_components/DashboardContainer";
+import AnalyticsContainer from "./_components/AnalyticsContainer";
 
 export const metadata = {
   title: "Analytics",
