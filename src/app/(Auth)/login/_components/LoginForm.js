@@ -31,19 +31,23 @@ export default function LoginForm() {
         SuccessModal("Login Successful!");
 
         // Set user info into store
+        const decoded = jwtDecode(res?.data?.accessToken);
         dispatch(
           setUser({
-            user: jwtDecode(res?.data?.accessToken),
+            user: decoded,
             token: res?.data?.accessToken,
           }),
         );
-
-        router.push("/admin/dashboard");
+        if (decoded?.role === "admin") {
+          router.push("/admin/dashboard");
+        } else if (decoded?.role === "sub_admin") {
+          router.push("/admin/wishlist");
+        }
         router.refresh();
         setFormError(null);
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
       setFormError(error?.data?.message || error?.error);
     }
   };
@@ -59,8 +63,10 @@ export default function LoginForm() {
 
       <FormWrapper
         defaultValues={{
-          email: "junayednoman05@gmail.com",
-          password: "encrypted",
+          email: "codecraftersgpt@gmail.com",
+          password: "Bwz$eAbG&DF2",
+          // email: "junayednoman05@gmail.com",
+          // password: "encrypted",
         }}
         onSubmit={onLoginSubmit}
         resolver={zodResolver(loginSchema)}

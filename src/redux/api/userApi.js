@@ -39,6 +39,23 @@ const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.users],
     }),
+
+    getSubAdmins: builder.query({
+      query: (arg) => ({
+        url: "/users/sub-admin",
+        method: "GET",
+        params: arg,
+        providesTags: [tagTypes.subAdmin],
+      }),
+    }),
+    addSubAdmin: builder.mutation({
+      query: (data) => ({
+        url: "/users/invitation-sub-admin",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.subAdmin],
+    }),
   }),
 });
 
@@ -47,4 +64,6 @@ export const {
   useUpdateProfileMutation,
   useGetAllUsersQuery,
   useChangeUserStatusMutation,
+  useGetSubAdminsQuery,
+  useAddSubAdminMutation,
 } = userApi;

@@ -24,6 +24,7 @@ export const tagTypes = {
   refundRequest: "RefundRequest",
   reports: "Reports",
   analytics: "Analytics",
+  subAdmin: "SubAdmin",
 };
 
 export const tagTypesList = [
@@ -53,4 +54,5 @@ export const tagTypesList = [
   tagTypes.reports,
   tagTypes.refundRequest,
   tagTypes.analytics,
+  tagTypes.subAdmin,
 ];

@@ -3,17 +3,15 @@
 import CustomConfirm from "@/components/CustomConfirm/CustomConfirm";
 import { Table, Tooltip, message } from "antd";
 import { Eye, UserRoundX, UserRoundCheck } from "lucide-react";
-import Image from "next/image";
-import userImage from "@/assets/images/user-avatar-lg.png";
 import { useState } from "react";
 import ProfileModal from "@/components/SharedModals/ProfileModal";
 import {
-  useGetAllUsersQuery,
   useChangeUserStatusMutation,
+  useGetSubAdminsQuery,
 } from "@/redux/api/userApi";
 import dayjs from "dayjs";
 
-const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
+const InvitationTable = ({ limit = null, showPagination = true }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [page, setPage] = useState(1);
@@ -27,10 +25,9 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
     isError,
     error,
     refetch,
-  } = useGetAllUsersQuery({
+  } = useGetSubAdminsQuery({
     page,
     limit: apiLimit,
-    searchTerm,
   });
 
   const [changeUserStatus] = useChangeUserStatusMutation();
@@ -42,13 +39,13 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
   const tableData = usersData.map((user, index) => ({
     key: (page - 1) * apiLimit + index + 1,
     name: user.name,
-    userImg: user.photoUrl || userImage,
     email: user.email,
     date: dayjs(user.createdAt).format("DD MMM YY, hh:mm A"),
     _id: user._id,
     status: user.status,
     address:
       `${user.street || "N/A"}, ${user.city || "N/A"}, ${user.state || "N/A"}, ${user.country || "N/A"}`.trim(),
+    contractNumber: user.contractNumber || "N/A",
   }));
 
   // Limit data to specified limit (e.g., 5 for dashboard)
@@ -85,13 +82,6 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
       dataIndex: "name",
       render: (value, record) => (
         <div className="flex-center-start gap-x-2">
-          <Image
-            src={record.userImg}
-            alt="User avatar"
-            width={50}
-            height={50}
-            className="aspect-square rounded-full"
-          />
           <p>{value}</p>
         </div>
       ),
@@ -99,6 +89,10 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
     {
       title: "Email",
       dataIndex: "email",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
     },
     {
       title: "Date",
@@ -176,4 +170,4 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
   );
 };
 
-export default UsersTable;
+export default InvitationTable;
