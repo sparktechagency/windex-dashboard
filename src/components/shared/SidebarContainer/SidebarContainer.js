@@ -26,6 +26,9 @@ import { User } from "lucide-react";
 import { NotepadText } from "lucide-react";
 import { Newspaper } from "lucide-react";
 import { Film } from "lucide-react";
+import Image from "next/image";
+import logoImg from "@/assets/logos/WishRoot Logo.png";
+import logoSmall from "@/assets/logos/WishRoot Logo small.png";
 
 const SidebarContainer = ({ collapsed }) => {
   const dispatch = useDispatch();
@@ -186,7 +189,14 @@ const SidebarContainer = ({ collapsed }) => {
       className="scroll-hide"
     >
       <div className="mb-6 flex flex-col items-center justify-center gap-y-5">
-        <Link href={"/"}>{collapsed ? <LogoSmall /> : <Logo />}</Link>
+        {/* <Link href={"/"}>{collapsed ? <LogoSmall /> : <Logo />}</Link> */}
+        <Link href={"/"}>
+          {collapsed ? (
+            <Image src={logoSmall} width={60} height={60} alt="logo" />
+          ) : (
+            <Image src={logoImg} width={110} height={110} alt="logo" />
+          )}
+        </Link>
       </div>
 
       <Menu

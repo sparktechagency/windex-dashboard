@@ -13,7 +13,7 @@ export default function AuthLayout({ children }) {
       {/* gradient-to-br from-[#e8eaeb] to-[#907a69]/30 */}
       <div className="mx-auto lg:w-1/3 2xl:w-[28%]">
         <Link href="/admin/dashboard" className="mx-auto mb-3 block w-max">
-          <Logo size={180} />
+          {/* <Logo size={180} /> */}
         </Link>
 
         <div className="border-gradient-to-b w-full rounded-xl border bg-white from-[#7D19F0] via-[#A06CF2] to-[#E6EAF9]">
