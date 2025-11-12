@@ -114,7 +114,7 @@ const InvitationTable = ({ limit = null, showPagination = true }) => {
           className={
             role === "viewer"
               ? "mt-6 flex hidden justify-between"
-              : "mt-6 block flex justify-between"
+              : "mt-6 block flex gap-5"
           }
         >
           <Tooltip title="Show Details">

@@ -201,7 +201,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
             </button>
           </CustomTooltip>
 
-          <div className={role === "viewer" ? "hidden" : "block"}>
+          <div className={role === "viewer" ? "hidden" : "mt-1.5 block"}>
             {record.status !== "approved" && (
               <CustomTooltip title="Approve Request">
                 <button

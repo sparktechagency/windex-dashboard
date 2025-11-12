@@ -209,7 +209,9 @@ const TokenOrderTable = ({ limit = 10, showPagination = true }) => {
               <CircleAlert size={20} />
             </button>
           </CustomTooltip>
-          <div className={role === "viewer" ? "hidden" : "block !space-x-3"}>
+          <div
+            className={role === "viewer" ? "hidden" : "mt-1.5 block !space-x-2"}
+          >
             {record.status !== "completed" && (
               <CustomTooltip title="Complete Order">
                 <button

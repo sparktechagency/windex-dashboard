@@ -218,7 +218,7 @@ const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
           </CustomTooltip>
 
           {role == "admin" && (
-            <div>
+            <div className="flex gap-5">
               {" "}
               {record.status !== "approved" && (
                 <CustomTooltip title="Approve Wishlist">
