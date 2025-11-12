@@ -1,4 +1,5 @@
 "use client";
+
 import {
   AreaChart,
   Area,
@@ -9,7 +10,10 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const CustomAreaChart = ({ chartName, data }) => {
+const CustomAreaChart = ({ chartName, data = [] }) => {
+  // Ensure valid array structure
+  const safeData = Array.isArray(data) ? data : [];
+
   return (
     <div className="w-full rounded-xl bg-primary-black p-6 md:w-1/2">
       <div className="mb-10 flex items-center justify-between">
@@ -18,68 +22,72 @@ const CustomAreaChart = ({ chartName, data }) => {
         </h1>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart
-          data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C8C8C8" stopOpacity={1} />
-              <stop
-                offset="100%"
-                stopColor="rgba(117, 136, 136, 0.10)"
-                stopOpacity={0.1}
-              />
-            </linearGradient>
-          </defs>
+      {safeData.length === 0 ? (
+        <p className="py-10 text-center text-gray-400">No data available</p>
+      ) : (
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart
+            data={safeData}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#C8C8C8" stopOpacity={1} />
+                <stop
+                  offset="100%"
+                  stopColor="rgba(117, 136, 136, 0.10)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+            </defs>
 
-          <XAxis
-            tickMargin={10}
-            axisLine={false}
-            tickLine={false}
-            dataKey="year"
-            tick={{ fill: "lightGray" }}
-          />
+            <XAxis
+              tickMargin={10}
+              axisLine={false}
+              tickLine={false}
+              dataKey="year"
+              tick={{ fill: "lightGray" }}
+            />
 
-          <YAxis
-            tickMargin={20}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "lightGray" }}
-          />
+            <YAxis
+              tickMargin={20}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "lightGray" }}
+            />
 
-          <CartesianGrid
-            opacity={0.19}
-            stroke="#080E0E"
-            strokeDasharray="3 3"
-          />
+            <CartesianGrid
+              opacity={0.19}
+              stroke="#080E0E"
+              strokeDasharray="3 3"
+            />
 
-          <Tooltip
-            formatter={(value) => [`Yearly ${chartName}: ${value}`]}
-            contentStyle={{
-              color: "var(--primary-black)",
-              fontWeight: "500",
-              borderRadius: "5px",
-              border: "0",
-            }}
-            itemStyle={{
-              color: "var(--primary)",
-              fontWeight: "500",
-            }}
-          />
+            <Tooltip
+              formatter={(value) => [`Yearly ${chartName}: ${value}`]}
+              contentStyle={{
+                color: "var(--primary-black)",
+                fontWeight: "500",
+                borderRadius: "5px",
+                border: "0",
+              }}
+              itemStyle={{
+                color: "var(--primary)",
+                fontWeight: "500",
+              }}
+            />
 
-          <Area
-            activeDot={{ fill: "var(--primary)" }}
-            type="monotone"
-            dataKey="amount"
-            strokeWidth={0}
-            stroke="var(--primary)"
-            fill="url(#gradientFill)" // Reference the gradient by id - declared top of the component
-            fillOpacity={1}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+            <Area
+              activeDot={{ fill: "var(--primary)" }}
+              type="monotone"
+              dataKey="amount"
+              strokeWidth={0}
+              stroke="var(--primary)"
+              fill="url(#gradientFill)"
+              fillOpacity={1}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };

@@ -1,51 +1,42 @@
-import { Select } from "antd";
-import { Form } from "antd";
-import { Controller } from "react-hook-form";
+"use client";
 
-const USelect = ({
+import { Controller, useFormContext } from "react-hook-form";
+import { Select, Form } from "antd";
+
+const RHFSelect = ({
   name,
   label,
   placeholder,
-  options,
-  size,
-  defaultValue,
-  showSearch,
+  options = [],
+  size = "middle",
   mode,
+  showSearch = false,
   filterOption,
-  style,
-  labelStyles = {},
+  style = {},
 }) => {
+  const { control } = useFormContext();
+
   return (
     <Controller
       name={name}
-      render={({
-        field: { onChange, value: fieldValue },
-        fieldState: { error },
-      }) => (
+      control={control}
+      defaultValue="" // important for RHF
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <Form.Item
-          label={
-            Object.keys(labelStyles)?.length > 0 ? (
-              <label style={labelStyles}>{label}</label>
-            ) : (
-              label
-            )
-          }
+          label={label}
           validateStatus={error ? "error" : ""}
-          help={error ? error.message : ""}
+          help={error?.message}
         >
           <Select
-            mode={mode}
-            filterOption={filterOption}
-            showSearch={showSearch}
-            value={fieldValue || defaultValue}
-            size={size}
+            value={value || undefined} // important to prevent resetting
+            onChange={(val) => onChange(val)}
             options={options}
-            onChange={onChange}
             placeholder={placeholder}
-            style={{
-              ...style,
-              height: style?.height || "35px",
-            }}
+            size={size}
+            mode={mode}
+            showSearch={showSearch}
+            filterOption={filterOption}
+            style={{ ...style, height: style?.height || "48px" }}
           />
         </Form.Item>
       )}
@@ -53,4 +44,4 @@ const USelect = ({
   );
 };
 
-export default USelect;
+export default RHFSelect;

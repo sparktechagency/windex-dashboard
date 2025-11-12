@@ -13,6 +13,7 @@ import {
   useChangeWishlistStatusMutation,
 } from "@/redux/api/wishlistApi";
 import WishListDetailsModal from "./wishListModal";
+import { useSelector } from "react-redux";
 
 const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const [open, setOpen] = useState(false);
@@ -39,6 +40,10 @@ const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
 
   const wishlistsData = wishlistsResponse?.data || [];
   const meta = wishlistsResponse?.meta || {};
+
+  // get user role
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.role;
 
   // Debugging logs
   console.log("WishListTable - wishlistsResponse:", wishlistsResponse);
@@ -211,79 +216,85 @@ const WishListTable = ({ searchTerm = "", limit, showPagination = true }) => {
               <Eye size={20} />
             </button>
           </CustomTooltip>
-          {record.status !== "approved" && (
-            <CustomTooltip title="Approve Wishlist">
-              <button
-                className="!rounded-full !shadow-none"
-                onClick={async () => {
-                  try {
-                    await changeWishlistStatus({
-                      id: record._id,
-                      data: { status: "approved" },
-                    }).unwrap();
-                    message.success("Wishlist approved successfully");
-                  } catch (err) {
-                    message.error("Failed to approve wishlist");
-                  }
-                }}
-              >
-                <CheckCircle className="text-green-500" size={20} />
-              </button>
-            </CustomTooltip>
-          )}
-          {record.status !== "denied" && (
-            <CustomConfirm
-              description={
-                <div>
-                  <p>Are you sure you want to deny this wishlist?</p>
-                  <Input
-                    placeholder="Enter reason for denial"
-                    value={denyReason}
-                    onChange={(e) => setDenyReason(e.target.value)}
-                    className="mt-2"
-                  />
-                </div>
-              }
-              onConfirm={async () => {
-                if (!denyReason) {
-                  message.error("Please provide a reason for denial");
-                  return;
-                }
-                try {
-                  await changeWishlistStatus({
-                    id: record._id,
-                    data: { status: "denied", reason: denyReason },
-                  }).unwrap();
-                  message.success("Wishlist denied successfully");
-                  setDenyReason(""); // Reset reason
-                } catch (err) {
-                  message.error("Failed to deny wishlist");
-                }
-              }}
-              onCancel={() => setDenyReason("")} // Reset reason on cancel
-            >
-              <button className="!rounded-full !shadow-none">
-                <CustomTooltip title="Deny Wishlist">
-                  <XCircle className="text-red-500" size={20} />
+
+          {role == "admin" && (
+            <div>
+              {" "}
+              {record.status !== "approved" && (
+                <CustomTooltip title="Approve Wishlist">
+                  <button
+                    className="!rounded-full !shadow-none"
+                    onClick={async () => {
+                      try {
+                        await changeWishlistStatus({
+                          id: record._id,
+                          data: { status: "approved" },
+                        }).unwrap();
+                        message.success("Wishlist approved successfully");
+                      } catch (err) {
+                        message.error("Failed to approve wishlist");
+                      }
+                    }}
+                  >
+                    <CheckCircle className="text-green-500" size={20} />
+                  </button>
                 </CustomTooltip>
-              </button>
-            </CustomConfirm>
+              )}
+              {record.status !== "denied" && (
+                <CustomConfirm
+                  description={
+                    <div>
+                      <p>Are you sure you want to deny this wishlist?</p>
+                      <Input
+                        placeholder="Enter reason for denial"
+                        value={denyReason}
+                        onChange={(e) => setDenyReason(e.target.value)}
+                        className="mt-2"
+                      />
+                    </div>
+                  }
+                  onConfirm={async () => {
+                    if (!denyReason) {
+                      message.error("Please provide a reason for denial");
+                      return;
+                    }
+                    try {
+                      await changeWishlistStatus({
+                        id: record._id,
+                        data: { status: "denied", reason: denyReason },
+                      }).unwrap();
+                      message.success("Wishlist denied successfully");
+                      setDenyReason(""); // Reset reason
+                    } catch (err) {
+                      message.error("Failed to deny wishlist");
+                    }
+                  }}
+                  onCancel={() => setDenyReason("")} // Reset reason on cancel
+                >
+                  <button className="!rounded-full !shadow-none">
+                    <CustomTooltip title="Deny Wishlist">
+                      <XCircle className="text-red-500" size={20} />
+                    </CustomTooltip>
+                  </button>
+                </CustomConfirm>
+              )}
+              <CustomTooltip title="Remove Wishlist">
+                <button
+                  className="!rounded-full !shadow-none"
+                  onClick={async () => {
+                    try {
+                      await deleteWishlist(record._id).unwrap();
+                      message.success("Wishlist deleted successfully");
+                    } catch (err) {
+                      message.error("Failed to delete wishlist");
+                    }
+                  }}
+                >
+                  <Trash2 className="text-red-500" size={20} />
+                </button>
+              </CustomTooltip>{" "}
+            </div>
           )}
-          <CustomTooltip title="Remove Wishlist">
-            <button
-              className="!rounded-full !shadow-none"
-              onClick={async () => {
-                try {
-                  await deleteWishlist(record._id).unwrap();
-                  message.success("Wishlist deleted successfully");
-                } catch (err) {
-                  message.error("Failed to delete wishlist");
-                }
-              }}
-            >
-              <Trash2 className="text-red-500" size={20} />
-            </button>
-          </CustomTooltip>
         </div>
       ),
     },

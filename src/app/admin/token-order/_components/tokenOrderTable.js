@@ -14,6 +14,7 @@ import {
   useDeleteOrderMutation,
   useGetAllOrdersQuery,
 } from "@/redux/api/orderApi";
+import { useSelector } from "react-redux";
 
 const TokenOrderTable = ({ limit = 10, showPagination = true }) => {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,8 @@ const TokenOrderTable = ({ limit = 10, showPagination = true }) => {
   const [searchText, setSearchText] = useState("");
   const defaultLimit = 10;
   const apiLimit = limit || defaultLimit;
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   // Debounced search handler
   const debouncedSetSearchText = debounce((value) => {
@@ -206,63 +209,66 @@ const TokenOrderTable = ({ limit = 10, showPagination = true }) => {
               <CircleAlert size={20} />
             </button>
           </CustomTooltip>
-          {record.status !== "completed" && (
-            <CustomTooltip title="Complete Order">
-              <button
-                className="!rounded-full !shadow-none"
-                onClick={async () => {
+          <div className={role === "viewer" ? "hidden" : "block !space-x-3"}>
+            {record.status !== "completed" && (
+              <CustomTooltip title="Complete Order">
+                <button
+                  className="!rounded-full !shadow-none"
+                  onClick={async () => {
+                    try {
+                      await changeOrderStatus({
+                        id: record._id,
+                        data: { status: "completed" },
+                      }).unwrap();
+                      message.success("Order marked as completed");
+                    } catch (err) {
+                      message.error("Failed to update order status");
+                    }
+                  }}
+                >
+                  <CheckCircle className="text-green-500" size={20} />
+                </button>
+              </CustomTooltip>
+            )}
+            {record.status !== "processing" &&
+              record.status !== "completed" && (
+                <CustomTooltip title="Process Order">
+                  <button
+                    className="!rounded-full !shadow-none"
+                    onClick={async () => {
+                      try {
+                        await changeOrderStatus({
+                          id: record._id,
+                          data: { status: "processing" },
+                        }).unwrap();
+                        message.success("Order marked as processing");
+                      } catch (err) {
+                        message.error("Failed to update order status");
+                      }
+                    }}
+                  >
+                    <Clock className="text-blue-500" size={20} />
+                  </button>
+                </CustomTooltip>
+              )}
+            <CustomTooltip title="Delete Order">
+              <CustomConfirm
+                description="Are you sure you want to delete this order?"
+                onConfirm={async () => {
                   try {
-                    await changeOrderStatus({
-                      id: record._id,
-                      data: { status: "completed" },
-                    }).unwrap();
-                    message.success("Order marked as completed");
+                    await deleteOrder(record._id).unwrap();
+                    message.success("Order deleted successfully");
                   } catch (err) {
-                    message.error("Failed to update order status");
+                    message.error("Failed to delete order");
                   }
                 }}
               >
-                <CheckCircle className="text-green-500" size={20} />
-              </button>
+                <button className="!rounded-full !shadow-none">
+                  <Trash2 className="text-red-500" size={20} />
+                </button>
+              </CustomConfirm>
             </CustomTooltip>
-          )}
-          {record.status !== "processing" && record.status !== "completed" && (
-            <CustomTooltip title="Process Order">
-              <button
-                className="!rounded-full !shadow-none"
-                onClick={async () => {
-                  try {
-                    await changeOrderStatus({
-                      id: record._id,
-                      data: { status: "processing" },
-                    }).unwrap();
-                    message.success("Order marked as processing");
-                  } catch (err) {
-                    message.error("Failed to update order status");
-                  }
-                }}
-              >
-                <Clock className="text-blue-500" size={20} />
-              </button>
-            </CustomTooltip>
-          )}
-          <CustomTooltip title="Delete Order">
-            <CustomConfirm
-              description="Are you sure you want to delete this order?"
-              onConfirm={async () => {
-                try {
-                  await deleteOrder(record._id).unwrap();
-                  message.success("Order deleted successfully");
-                } catch (err) {
-                  message.error("Failed to delete order");
-                }
-              }}
-            >
-              <button className="!rounded-full !shadow-none">
-                <Trash2 className="text-red-500" size={20} />
-              </button>
-            </CustomConfirm>
-          </CustomTooltip>
+          </div>
         </div>
       ),
     },

@@ -12,6 +12,7 @@ import {
   useChangeRefundStatusMutation,
   useGetRefundRequestsQuery,
 } from "@/redux/api/refundApi";
+import { useSelector } from "react-redux";
 
 const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const [open, setOpen] = useState(false);
@@ -20,6 +21,8 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const [denyReason, setDenyReason] = useState("");
   const defaultLimit = 10;
   const apiLimit = limit || defaultLimit;
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   const {
     data: refundResponse,
@@ -32,7 +35,7 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
   const [changeRefundStatus] = useChangeRefundStatusMutation();
 
   const meta = refundResponse?.meta || {};
-  
+
   // Map API data to table format
   const tableData = refundData.map((reqeust, index) => ({
     key: (page - 1) * apiLimit + index + 1,
@@ -197,55 +200,58 @@ const RefundTable = ({ searchTerm = "", limit, showPagination = true }) => {
               <Eye size={20} />
             </button>
           </CustomTooltip>
-          {record.status !== "approved" && (
-            <CustomTooltip title="Approve Request">
-              <button
-                className="!rounded-full !shadow-none"
-                onClick={async () => {
+
+          <div className={role === "viewer" ? "hidden" : "block"}>
+            {record.status !== "approved" && (
+              <CustomTooltip title="Approve Request">
+                <button
+                  className="!rounded-full !shadow-none"
+                  onClick={async () => {
+                    try {
+                      await changeRefundStatus({
+                        id: record._id,
+                        data: { status: "approved" },
+                      }).unwrap();
+                      message.success("reqeust approved successfully");
+                    } catch (err) {
+                      message.error("Failed to approve reqeust");
+                    }
+                  }}
+                >
+                  <CheckCircle className="text-green-500" size={20} />
+                </button>
+              </CustomTooltip>
+            )}
+            {record.status !== "denied" && (
+              <CustomConfirm
+                title={"Deny Request"}
+                description={
+                  <div>
+                    <p>Are you sure you want to deny this request?</p>
+                  </div>
+                }
+                onConfirm={async () => {
                   try {
                     await changeRefundStatus({
                       id: record._id,
-                      data: { status: "approved" },
+                      data: { status: "denied", reason: denyReason },
                     }).unwrap();
-                    message.success("reqeust approved successfully");
+                    message.success("reqeust denied successfully");
+                    setDenyReason(""); // Reset reason
                   } catch (err) {
-                    message.error("Failed to approve reqeust");
+                    message.error("Failed to deny reqeust");
                   }
                 }}
+                onCancel={() => setDenyReason("")} // Reset reason on cancel
               >
-                <CheckCircle className="text-green-500" size={20} />
-              </button>
-            </CustomTooltip>
-          )}
-          {record.status !== "denied" && (
-            <CustomConfirm
-              title={"Deny Request"}
-              description={
-                <div>
-                  <p>Are you sure you want to deny this request?</p>
-                </div>
-              }
-              onConfirm={async () => {
-                try {
-                  await changeRefundStatus({
-                    id: record._id,
-                    data: { status: "denied", reason: denyReason },
-                  }).unwrap();
-                  message.success("reqeust denied successfully");
-                  setDenyReason(""); // Reset reason
-                } catch (err) {
-                  message.error("Failed to deny reqeust");
-                }
-              }}
-              onCancel={() => setDenyReason("")} // Reset reason on cancel
-            >
-              <button className="!rounded-full !shadow-none">
-                <CustomTooltip title="Deny reqeust">
-                  <XCircle className="text-red-500" size={20} />
-                </CustomTooltip>
-              </button>
-            </CustomConfirm>
-          )}
+                <button className="!rounded-full !shadow-none">
+                  <CustomTooltip title="Deny reqeust">
+                    <XCircle className="text-red-500" size={20} />
+                  </CustomTooltip>
+                </button>
+              </CustomConfirm>
+            )}
+          </div>
         </div>
       ),
     },

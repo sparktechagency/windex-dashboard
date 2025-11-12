@@ -1,176 +1,223 @@
 "use client";
-import Logo from "@/assets/logos/Logo";
+
 import "./Sidebar.css";
-import LogoSmall from "@/assets/logos/LogoSmall";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import { Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import {
-  Users2,
-  LogOut,
   House,
-  Settings,
-  TriangleAlert,
   ChartColumnDecreasing,
-  TicketSlash,
+  Users2,
   BookHeart,
-  Mail,
+  TicketSlash,
+  Coins,
+  TriangleAlert,
+  User,
+  NotepadText,
+  Newspaper,
+  Film,
+  Settings,
   Mails,
+  LogOut,
 } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { logout } from "@/redux/features/authSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { successToast } from "@/utils/customToast";
-import { Coins } from "lucide-react";
-import { User } from "lucide-react";
-import { NotepadText } from "lucide-react";
-import { Newspaper } from "lucide-react";
-import { Film } from "lucide-react";
-import Image from "next/image";
 import logoImg from "@/assets/logos/WishRoot Logo.png";
 import logoSmall from "@/assets/logos/WishRoot Logo small.png";
+import { logout } from "@/redux/features/authSlice";
+import { successToast } from "@/utils/customToast";
+import { jwtDecode } from "jwt-decode";
 
 const SidebarContainer = ({ collapsed }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const user = useSelector((state) => state.auth.user);
 
-  // Logout handler
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  const decoded = token ? jwtDecode(token) : null;
+
+  console.log("Decoded Token:", decoded);
+  console.log("User Role:", user?.role, "| Permission:", user?.permission);
+
+  // ---- LOGOUT HANDLER ----
   const handleLogout = (e) => {
     if (e.key !== "logout") return;
     dispatch(logout());
-    router.refresh();
     router.push("/login");
     successToast("Logout Successful!");
   };
 
-  const sidebarLinks = [
-    {
-      key: "dashboard",
-      icon: <House size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/dashboard"}>Dashboard</Link>,
-    },
-    {
-      key: "analytics",
-      icon: <ChartColumnDecreasing size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/analytics"}>Analytics</Link>,
-    },
-    {
-      key: "users",
-      icon: <Users2 size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/users"}>Users</Link>,
-    },
-    {
-      key: "Wish List",
-      icon: <BookHeart />,
-      label: <Link href={"/admin/wishlist"}>Wish List</Link>,
-    },
-    {
-      key: "Refund Requests",
-      icon: <TicketSlash />,
-      label: <Link href={"/admin/refund-request"}>Refund Request</Link>,
-    },
-    {
-      key: "tokenOrder",
-      icon: <Coins size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/token-order"}>Token Order</Link>,
-    },
-    {
-      key: "report",
-      icon: <TriangleAlert size={21} strokeWidth={2} />,
-      label: <span>Report Review</span>,
-      children: [
-        {
-          key: "profile-report",
-          icon: <User size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/profile-report"}>Profile Report</Link>,
-        },
-        {
-          key: "wishlist-report",
-          icon: <NotepadText size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/wishlist-report"}>Wishlist Report</Link>,
-        },
-        {
-          key: "feed-report",
-          icon: <Newspaper size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/feed-report"}>Feed Report</Link>,
-        },
-        {
-          key: "reel-report",
-          icon: <Film size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/reel-report"}>Reel Report</Link>,
-        },
-      ],
-    },
-    {
-      key: "settings",
-      icon: <Settings size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/settings"}>Settings</Link>,
-    },
-    {
-      key: "invitations",
-      icon: <Mails size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/invitations"}>Invitations</Link>,
-    },
-    {
-      key: "logout",
-      icon: <LogOut size={21} strokeWidth={2} />,
-      label: "Logout",
-    },
-  ];
+  // ---- DEFINE SIDEBAR LINKS ----
+  const Navlinks = {
+    admin: [
+      {
+        key: "dashboard",
+        icon: <House size={21} />,
+        label: <Link href="/admin/dashboard">Dashboard</Link>,
+      },
+      {
+        key: "analytics",
+        icon: <ChartColumnDecreasing size={21} />,
+        label: <Link href="/admin/analytics">Analytics</Link>,
+      },
+      {
+        key: "users",
+        icon: <Users2 size={21} />,
+        label: <Link href="/admin/users">Users</Link>,
+      },
+      {
+        key: "wishlist",
+        icon: <BookHeart />,
+        label: <Link href="/admin/wishlist">Wish List</Link>,
+      },
+      {
+        key: "refund",
+        icon: <TicketSlash />,
+        label: <Link href="/admin/refund-request">Refund Request</Link>,
+      },
+      {
+        key: "tokenOrder",
+        icon: <Coins size={21} />,
+        label: <Link href="/admin/token-order">Token Order</Link>,
+      },
+      {
+        key: "reports",
+        icon: <TriangleAlert size={21} />,
+        label: "Report Review",
+        children: [
+          {
+            key: "profile-report",
+            icon: <User size={20} />,
+            label: <Link href="/admin/profile-report">Profile Report</Link>,
+          },
+          {
+            key: "wishlist-report",
+            icon: <NotepadText size={20} />,
+            label: <Link href="/admin/wishlist-report">Wishlist Report</Link>,
+          },
+          {
+            key: "feed-report",
+            icon: <Newspaper size={20} />,
+            label: <Link href="/admin/feed-report">Feed Report</Link>,
+          },
+          {
+            key: "reel-report",
+            icon: <Film size={20} />,
+            label: <Link href="/admin/reel-report">Reel Report</Link>,
+          },
+        ],
+      },
+      {
+        key: "settings",
+        icon: <Settings size={21} />,
+        label: <Link href="/admin/settings">Settings</Link>,
+      },
+      {
+        key: "invitations",
+        icon: <Mails size={21} />,
+        label: <Link href="/admin/invitations">Invitations</Link>,
+      },
+      {
+        key: "logout",
+        icon: <LogOut size={21} />,
+        label: "Logout",
+      },
+    ],
 
-  const subAdminSidebarLinks = [
-    {
-      key: "Wish List",
-      icon: <BookHeart />,
-      label: <Link href={"/admin/wishlist"}>Wish List</Link>,
-    },
-    {
-      key: "Refund Requests",
-      icon: <TicketSlash />,
-      label: <Link href={"/admin/refund-request"}>Refund Request</Link>,
-    },
-    {
-      key: "tokenOrder",
-      icon: <Coins size={21} strokeWidth={2} />,
-      label: <Link href={"/admin/token-order"}>Token Order</Link>,
-    },
-    {
-      key: "report",
-      icon: <TriangleAlert size={21} strokeWidth={2} />,
-      label: <span>Report Review</span>,
-      children: [
-        {
-          key: "profile-report",
-          icon: <User size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/profile-report"}>Profile Report</Link>,
-        },
-        {
-          key: "wishlist-report",
-          icon: <NotepadText size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/wishlist-report"}>Wishlist Report</Link>,
-        },
-        {
-          key: "feed-report",
-          icon: <Newspaper size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/feed-report"}>Feed Report</Link>,
-        },
-        {
-          key: "reel-report",
-          icon: <Film size={21} strokeWidth={2} />,
-          label: <Link href={"/admin/reel-report"}>Reel Report</Link>,
-        },
-      ],
-    },
-    {
-      key: "logout",
-      icon: <LogOut size={21} strokeWidth={2} />,
-      label: "Logout",
-    },
-  ];
+    order_support: [
+      {
+        key: "tokenOrder",
+        icon: <Coins size={21} />,
+        label: <Link href="/admin/token-order">Token Order</Link>,
+      },
+      {
+        key: "logout",
+        icon: <LogOut size={21} />,
+        label: "Logout",
+      },
+    ],
 
-  // Get current path for sidebar menu item `key`
-  const currentPathname = usePathname()?.replace("/admin/", "")?.split(" ")[0];
+    content_reviewer: [
+      {
+        key: "reports",
+        icon: <TriangleAlert size={21} />,
+        label: "Report Review",
+        children: [
+          {
+            key: "profile-report",
+            icon: <User size={20} />,
+            label: <Link href="/admin/profile-report">Profile Report</Link>,
+          },
+          {
+            key: "wishlist-report",
+            icon: <NotepadText size={20} />,
+            label: <Link href="/admin/wishlist-report">Wishlist Report</Link>,
+          },
+          {
+            key: "feed-report",
+            icon: <Newspaper size={20} />,
+            label: <Link href="/admin/feed-report">Feed Report</Link>,
+          },
+          {
+            key: "reel-report",
+            icon: <Film size={20} />,
+            label: <Link href="/admin/reel-report">Reel Report</Link>,
+          },
+        ],
+      },
+      {
+        key: "logout",
+        icon: <LogOut size={21} />,
+        label: "Logout",
+      },
+    ],
+
+    finance: [
+      {
+        key: "tokenOrder",
+        icon: <Coins size={21} />,
+        label: <Link href="/admin/token-order">Token Order</Link>,
+      },
+      {
+        key: "refund",
+        icon: <TicketSlash />,
+        label: <Link href="/admin/refund-request">Refund Request</Link>,
+      },
+      {
+        key: "logout",
+        icon: <LogOut size={21} />,
+        label: "Logout",
+      },
+    ],
+  };
+
+  // ---- CHOOSE LINK SET BASED ON ROLE/PERMISSION ----
+  let menuItems = [];
+
+  if (user?.role === "admin") {
+    menuItems = Navlinks.admin;
+  } else if (user?.role === "sub_admin") {
+    switch (user?.permission) {
+      case "order_support":
+        menuItems = Navlinks.order_support;
+        break;
+      case "content_reviewer":
+        menuItems = Navlinks.content_reviewer;
+        break;
+      case "finance":
+        menuItems = Navlinks.finance;
+        break;
+      default:
+        menuItems = Navlinks.admin;
+        break;
+    }
+  } else {
+    menuItems = Navlinks.admin;
+  }
+
+  // ---- ACTIVE MENU HIGHLIGHT ----
+  const currentPathname = usePathname()?.replace("/admin/", "") || "";
 
   return (
     <Sider
@@ -180,7 +227,7 @@ const SidebarContainer = ({ collapsed }) => {
       collapsible
       collapsed={collapsed}
       style={{
-        paddingInline: `${!collapsed ? "10px" : "4px"}`,
+        paddingInline: collapsed ? "4px" : "10px",
         paddingBlock: "80px",
         backgroundColor: "var(--primary-black)",
         maxHeight: "100vh",
@@ -189,8 +236,7 @@ const SidebarContainer = ({ collapsed }) => {
       className="scroll-hide"
     >
       <div className="mb-6 flex flex-col items-center justify-center gap-y-5">
-        {/* <Link href={"/"}>{collapsed ? <LogoSmall /> : <Logo />}</Link> */}
-        <Link href={"/"}>
+        <Link href="/">
           {collapsed ? (
             <Image src={logoSmall} width={60} height={60} alt="logo" />
           ) : (
@@ -204,7 +250,7 @@ const SidebarContainer = ({ collapsed }) => {
         defaultSelectedKeys={[currentPathname]}
         mode="inline"
         className="sidebar-menu space-y-2.5 !border-none !bg-transparent !pb-10"
-        items={user?.role === "admin" ? sidebarLinks : subAdminSidebarLinks}
+        items={menuItems}
       />
     </Sider>
   );

@@ -5,6 +5,7 @@ import { MessageSquareWarning } from "lucide-react";
 import React from "react";
 import { useChangeReportStatusMutation } from "@/redux/api/reportApi";
 import { message } from "antd";
+import { useSelector } from "react-redux";
 
 const RowData = ({ name, value }) => {
   return (
@@ -22,6 +23,8 @@ export default function ReportModal({
   setModalData,
 }) {
   const [changeReportStatus] = useChangeReportStatusMutation();
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   const handleStatusChange = async (status) => {
     try {
@@ -82,7 +85,13 @@ export default function ReportModal({
           <RowData name="Report Status" value={modalData?.status} />
           <RowData name="Report Date" value={modalData?.date} />
         </div>
-        <div className="mt-6 flex justify-between">
+        <div
+          className={
+            role === "viewer"
+              ? "mt-6 flex hidden justify-between"
+              : "mt-6 block flex justify-between"
+          }
+        >
           <button
             onClick={() => handleStatusChange("denied")}
             className="w-1/2 rounded-lg border border-gray-300 py-2 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"

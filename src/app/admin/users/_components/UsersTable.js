@@ -12,6 +12,7 @@ import {
   useChangeUserStatusMutation,
 } from "@/redux/api/userApi";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 
 const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -19,6 +20,8 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
   const [page, setPage] = useState(1);
   const defaultLimit = 10;
   const apiLimit = limit || defaultLimit;
+
+  const user = useSelector((state) => state.auth.user);
 
   // Fetch users data with pagination
   const {
@@ -118,39 +121,45 @@ const UsersTable = ({ limit = null, showPagination = true, searchTerm }) => {
               <Eye color="white" size={23} />
             </button>
           </Tooltip>
-          <Tooltip
-            title={record.status === "blocked" ? "Unblock User" : "Block User"}
-          >
-            <CustomConfirm
-              title={"Change User Status"}
-              description={`Are you sure you want to ${
-                record.status === "blocked" ? "unblock" : "block"
-              } this user?`}
-              onConfirm={async () => {
-                try {
-                  await changeUserStatus({
-                    userId: record._id,
-                    status: record.status === "blocked" ? "active" : "blocked",
-                  }).unwrap();
-                  message.success(
-                    `User ${record.status === "blocked" ? "unblocked" : "blocked"} successfully`,
-                  );
-                  refetch();
-                } catch (err) {
-                  console.log("err", err);
-                  message.error("Failed to change user status");
-                }
-              }}
+
+          {user?.role === "admin" && (
+            <Tooltip
+              title={
+                record.status === "blocked" ? "Unblock User" : "Block User"
+              }
             >
-              <button>
-                {record.status === "blocked" ? (
-                  <UserRoundCheck color="green" size={22} />
-                ) : (
-                  <UserRoundX color="var(--danger)" size={22} />
-                )}
-              </button>
-            </CustomConfirm>
-          </Tooltip>
+              <CustomConfirm
+                title={"Change User Status"}
+                description={`Are you sure you want to ${
+                  record.status === "blocked" ? "unblock" : "block"
+                } this user?`}
+                onConfirm={async () => {
+                  try {
+                    await changeUserStatus({
+                      userId: record._id,
+                      status:
+                        record.status === "blocked" ? "active" : "blocked",
+                    }).unwrap();
+                    message.success(
+                      `User ${record.status === "blocked" ? "unblocked" : "blocked"} successfully`,
+                    );
+                    refetch();
+                  } catch (err) {
+                    console.log("err", err);
+                    message.error("Failed to change user status");
+                  }
+                }}
+              >
+                <button>
+                  {record.status === "blocked" ? (
+                    <UserRoundCheck color="green" size={22} />
+                  ) : (
+                    <UserRoundX color="var(--danger)" size={22} />
+                  )}
+                </button>
+              </CustomConfirm>
+            </Tooltip>
+          )}
         </div>
       ),
     },

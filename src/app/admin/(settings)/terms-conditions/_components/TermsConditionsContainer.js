@@ -11,6 +11,7 @@ import { errorToast, successToast } from "@/utils/customToast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "antd";
 import { Edit } from "lucide-react";
+import { useSelector } from "react-redux";
 import { object, string } from "zod";
 
 const termsAndConditionsValidationSchema = object({
@@ -19,6 +20,8 @@ const termsAndConditionsValidationSchema = object({
 
 export default function TermsConditionsContainer() {
   const { data: data, isLoading: isContentLoading } = useGetContentsQuery();
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   const [updateFn, { isLoading }] = useUpdateContentMutation();
 
@@ -60,16 +63,24 @@ export default function TermsConditionsContainer() {
           placeholder="Note: Enter details about your terms and conditions here."
         />
 
-        <Button
-          htmlType="submit"
-          type="primary"
-          size="large"
-          className="w-full rounded-xl"
-          icon={<Edit size={18} />}
-          loading={isLoading}
+        <div
+          className={
+            role === "viewer"
+              ? "mt-6 flex hidden justify-between"
+              : "mt-6 block flex justify-between"
+          }
         >
-          Save Changes
-        </Button>
+          <Button
+            htmlType="submit"
+            type="primary"
+            size="large"
+            className="w-full rounded-xl"
+            icon={<Edit size={18} />}
+            loading={isLoading}
+          >
+            Save Changes
+          </Button>
+        </div>
       </FormWrapper>
     </section>
   );

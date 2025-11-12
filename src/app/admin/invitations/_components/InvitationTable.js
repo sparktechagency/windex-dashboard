@@ -10,6 +10,7 @@ import {
   useGetSubAdminsQuery,
 } from "@/redux/api/userApi";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 
 const InvitationTable = ({ limit = null, showPagination = true }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -17,6 +18,9 @@ const InvitationTable = ({ limit = null, showPagination = true }) => {
   const [page, setPage] = useState(1);
   const defaultLimit = 10;
   const apiLimit = limit || defaultLimit;
+
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   // Fetch users data with pagination
   const {
@@ -46,6 +50,7 @@ const InvitationTable = ({ limit = null, showPagination = true }) => {
     address:
       `${user.street || "N/A"}, ${user.city || "N/A"}, ${user.state || "N/A"}, ${user.country || "N/A"}`.trim(),
     contractNumber: user.contractNumber || "N/A",
+    permission: user.permission || "N/A",
   }));
 
   // Limit data to specified limit (e.g., 5 for dashboard)
@@ -91,6 +96,10 @@ const InvitationTable = ({ limit = null, showPagination = true }) => {
       dataIndex: "email",
     },
     {
+      title: "Permission",
+      dataIndex: "permission",
+    },
+    {
       title: "Status",
       dataIndex: "status",
     },
@@ -101,7 +110,13 @@ const InvitationTable = ({ limit = null, showPagination = true }) => {
     {
       title: "Action",
       render: (_, record) => (
-        <div className="flex-center-start gap-x-4">
+        <div
+          className={
+            role === "viewer"
+              ? "mt-6 flex hidden justify-between"
+              : "mt-6 block flex justify-between"
+          }
+        >
           <Tooltip title="Show Details">
             <button
               onClick={() => {

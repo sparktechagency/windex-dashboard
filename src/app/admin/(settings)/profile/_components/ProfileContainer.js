@@ -25,7 +25,9 @@ const customAntTheme = {
 };
 
 export default function ProfileContainer() {
-  const userId = useSelector((state) => state.auth.user)?.userId;
+  const user = useSelector((state) => state.auth.user);
+  const userId = user?._id;
+  console.log(userId);
   const [showChangePicModal, setShowChangePicModal] = useState(false);
 
   const { data: myProfileRes } = useGetProfileQuery({}, { skip: !userId });

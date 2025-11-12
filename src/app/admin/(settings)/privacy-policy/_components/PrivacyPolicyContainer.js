@@ -11,6 +11,7 @@ import { errorToast, successToast } from "@/utils/customToast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "antd";
 import { Edit } from "lucide-react";
+import { useSelector } from "react-redux";
 import { object, string } from "zod";
 
 const privacyPolicyValidationSchema = object({
@@ -21,6 +22,8 @@ export default function PrivacyPolicyContainer() {
   const { data: privacyPolicyRes, isLoading: isContentLoading } =
     useGetContentsQuery();
   const [updateFn, { isLoading }] = useUpdateContentMutation();
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   const privacyPolicyData = privacyPolicyRes?.data[0]?.privacyPolicy || "";
   console.log("privacyPolicyData", privacyPolicyData);
@@ -59,16 +62,24 @@ export default function PrivacyPolicyContainer() {
           placeholder="Note: Enter details about your privacy policy here."
         />
 
-        <Button
-          htmlType="submit"
-          type="primary"
-          size="large"
-          className="w-full rounded-xl"
-          icon={<Edit size={18} />}
-          loading={isLoading}
+        <div
+          className={
+            role === "viewer"
+              ? "mt-6 flex hidden justify-between"
+              : "mt-6 block flex justify-between"
+          }
         >
-          Save Changes
-        </Button>
+          <Button
+            htmlType="submit"
+            type="primary"
+            size="large"
+            className="w-full rounded-xl"
+            icon={<Edit size={18} />}
+            loading={isLoading}
+          >
+            Save Changes
+          </Button>
+        </div>
       </FormWrapper>
     </section>
   );

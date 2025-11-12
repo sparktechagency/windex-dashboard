@@ -3,15 +3,25 @@ import { Button } from "antd";
 import InvitationTable from "./InvitationTable";
 import { useState } from "react";
 import SubAdminInvitationModal from "@/app/(Auth)/login/_components/SubAdminInvitationModal";
+import { useSelector } from "react-redux";
 export default function InvitationContainer() {
   const [showInvitationModal, setShowInvitationModal] = useState(false);
+
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.permission;
 
   return (
     <div>
       <section className="my-12">
         <div className="flex-center-between">
           <h4 className="text-[32px] font-semibold text-white">Invitations</h4>
-          <div>
+          <div
+            className={
+              role === "viewer"
+                ? "mt-6 flex hidden justify-between"
+                : "mt-6 block flex justify-between"
+            }
+          >
             <Button
               htmlType="submit"
               type="primary"

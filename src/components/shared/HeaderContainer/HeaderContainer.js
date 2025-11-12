@@ -21,7 +21,8 @@ const { Header } = Layout;
 export default function HeaderContainer({ collapsed, setCollapsed }) {
   const pathname = usePathname();
   const navbarTitle = pathname.split("/admin")[1];
-  const userId = useSelector((state) => state.auth.user)?.userId;
+  const user = useSelector((state) => state.auth.user);
+  const userId = user?._id;
   const { socket } = useSocket();
   const dispatch = useDispatch();
   const [showNotificationDot, setShowNotificationDot] = useState(false);

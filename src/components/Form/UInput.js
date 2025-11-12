@@ -1,7 +1,5 @@
-"use client";
-
+import { useFormContext, Controller } from "react-hook-form";
 import { Form, Input } from "antd";
-import { Controller } from "react-hook-form";
 
 const UInput = ({
   type,
@@ -19,9 +17,12 @@ const UInput = ({
   max,
   required,
 }) => {
+  const { control } = useFormContext(); // 🔥 must have this
+
   return (
     <Controller
       name={name}
+      control={control} // 🔥 this connects field to form
       render={({ field, fieldState: { error } }) => (
         <Form.Item
           label={
@@ -37,8 +38,6 @@ const UInput = ({
           {type === "password" ? (
             <Input.Password
               {...field}
-              type={type}
-              id={name}
               size={size}
               placeholder={placeholder}
               className={className}
@@ -47,7 +46,6 @@ const UInput = ({
             <Input
               {...field}
               type={type}
-              id={name}
               size={size}
               placeholder={placeholder}
               disabled={disabled}

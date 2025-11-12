@@ -34,14 +34,14 @@ export default function LoginForm() {
         const decoded = jwtDecode(res?.data?.accessToken);
         dispatch(
           setUser({
-            user: decoded,
+            user: res?.data?.user,
             token: res?.data?.accessToken,
           }),
         );
         if (decoded?.role === "admin") {
           router.push("/admin/dashboard");
         } else if (decoded?.role === "sub_admin") {
-          router.push("/admin/wishlist");
+          router.push("/admin/dashboard");
         }
         router.refresh();
         setFormError(null);
@@ -63,10 +63,10 @@ export default function LoginForm() {
 
       <FormWrapper
         defaultValues={{
-          email: "codecraftersgpt@gmail.com",
-          password: "Bwz$eAbG&DF2",
-          // email: "junayednoman05@gmail.com",
-          // password: "encrypted",
+          // email: "codecraftersgpt@gmail.com",
+          // password: "Bwz$eAbG&DF2",
+          email: "junayednoman05@gmail.com",
+          password: "encrypted",
         }}
         onSubmit={onLoginSubmit}
         resolver={zodResolver(loginSchema)}

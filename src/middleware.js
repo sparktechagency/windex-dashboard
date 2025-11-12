@@ -2,6 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { NextResponse } from "next/server";
 
 const subAdminRoutes = [
+  "/admin/dashboard",
   "/admin/wishlist",
   "/admin/refund-request",
   "/admin/token-order",
@@ -10,6 +11,13 @@ const subAdminRoutes = [
   "/admin/feed-report",
   "/admin/reel-report",
   "/admin/profile",
+  "/admin/analytics",
+  "/admin/invitations",
+  "/admin/settings",
+  "/admin/users",
+  "/admin/privacy-policy",
+  "/admin/terms-conditions",
+  "/admin/about-us",
 ];
 
 export function middleware(req) {
@@ -23,6 +31,7 @@ export function middleware(req) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
   const decoded = jwtDecode(isLoggedIn);
+  console.log("decoded", decoded);
   if (
     decoded?.role === "sub_admin" &&
     !subAdminRoutes.includes(nextUrl.pathname)
